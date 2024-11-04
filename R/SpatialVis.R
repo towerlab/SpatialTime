@@ -1,3 +1,4 @@
+#' SpatialVis
 #' @param file Seurat Object as Input
 #' @param st.calc Spatialtime values
 #' @param spatial.by absolute or relative values

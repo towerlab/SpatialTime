@@ -10,6 +10,7 @@
 #'
 #' @import Seurat
 #' @import tidyverse
+#' @import monocle
 #' @export
 
 

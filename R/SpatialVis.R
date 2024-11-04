@@ -3,6 +3,13 @@
 #' @param spatial.by absolute or relative values
 #' @param slice Select tissue slice
 #' @param return_obj Return object
+#' SpatialVis
+#' @import Seurat
+#' @import tidyverse
+#' @export
+#'
+#' @details
+#' This function calculates and adds coordinates values to each line drawn in data frame.
 
 SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", return_obj = F) {
 

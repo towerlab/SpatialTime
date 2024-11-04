@@ -2,7 +2,8 @@
 % Please edit documentation in R/subsetLabels.R
 \name{subsetLabels}
 \alias{subsetLabels}
-\title{@param file Seurat object as Input
+\title{subsetLabels
+@param file Seurat object as Input
 @param cluster Cluster names in Idents
 @param export.all Export coordinates files
 @param slice.n Image slice number
@@ -17,9 +18,11 @@ subsetLabels(
 )
 }
 \description{
-@param file Seurat object as Input
-@param cluster Cluster names in Idents
-@param export.all Export coordinates files
-@param slice.n Image slice number
-@param dir.out directory output
+@details
+This function calculates and adds coordinates values to each line drawn in data frame.
+}
+\details{
+@import Seurat
+@import tidyverse
+@export
 }

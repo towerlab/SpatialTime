@@ -1,8 +1,16 @@
+#' PseudoTime
 #' @param file Seurat object with module annotation
 #' @param assay Seurat Assay
 #' @param min_expr Minimum gene expression
 #' @param min_cells minimum cells expression
 #' @param mean_expr Mean gene expression
+#'
+#' @details
+#' This function calculates and adds coordinates values to each line drawn in data frame.
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @export
 
 
 PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 2, mean_expr = 0.1) {

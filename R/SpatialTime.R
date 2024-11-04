@@ -1,5 +1,13 @@
+#' SpatialTime
 #' @param file cluster coordinates file
 #' @param id line as reference
+#'
+#'  @details
+#'  This function calculates and adds coordinates values to each line drawn in data frame.
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @export
 
 SpatialTime <- function(file = "", id = NULL) {
 

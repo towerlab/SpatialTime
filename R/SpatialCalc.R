@@ -1,7 +1,16 @@
+#' SpatialCalc
 #' @param file Fiji file
 #' @param factor Scale factor
 #' @param colors Line colors
 #' @param tissue Tissue ID
+#'
+#' @details
+#' This function calculates and adds coordinates values to each line drawn in data frame.
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @export
+
 
 SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
 

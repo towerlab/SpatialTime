@@ -1,8 +1,17 @@
+#'  subsetLabels
 #'  @param file Seurat object as Input
 #'  @param cluster Cluster names in Idents
 #'  @param export.all Export coordinates files
 #'  @param slice.n Image slice number
 #'  @param dir.out directory output
+#'
+#'  @details
+#'  This function calculates and adds coordinates values to each line drawn in data frame.
+#'
+#'  @import Seurat
+#'  @import tidyverse
+#'  @export
+
 
 subsetLabels <- function(file = NULL, cluster = NULL, export.all = TRUE,
                          slice.n = "slice1", dir.out = "") {
@@ -41,3 +50,5 @@ subsetLabels <- function(file = NULL, cluster = NULL, export.all = TRUE,
               file.path(dir.out, "all_coordinates.csv"))
   }
 }
+
+use_testthat()

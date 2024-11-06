@@ -1,5 +1,5 @@
 #'  CoordMerge
-#'  @param file Seurat object as Input
+#'  @param files Seurat object as Input
 #'  @param pattern Cluster names in Idents
 #'
 #'
@@ -10,9 +10,6 @@
 #'  @import tidyverse
 #'  @import fs
 #'  @export
-
-#' @file - Direcotry with slices .csv file
-#' @pattern - Regex pattern to select specific files within directory
 
 CoordMerge <- function(files = "", pattern = NULL) {
 

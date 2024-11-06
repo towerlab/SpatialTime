@@ -3,7 +3,7 @@
 \name{CoordMerge}
 \alias{CoordMerge}
 \title{CoordMerge
-@param file Seurat object as Input
+@param files Seurat object as Input
 @param pattern Cluster names in Idents}
 \usage{
 CoordMerge(files = "", pattern = NULL)

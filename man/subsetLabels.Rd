@@ -19,7 +19,7 @@ subsetLabels(
 }
 \description{
 @details
-This function calculates and adds coordinates values to each line drawn in data frame.
+This function allows the selection of clusters of interest and exporting their coordinates for further analysis
 }
 \details{
 @import Seurat

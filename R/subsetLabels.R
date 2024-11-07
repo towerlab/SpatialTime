@@ -50,3 +50,5 @@ subsetLabels <- function(file = NULL, cluster = NULL, export.all = TRUE,
               file.path(dir.out, "all_coordinates.csv"))
   }
 }
+
+

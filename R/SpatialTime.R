@@ -9,16 +9,21 @@
 #' @import tidyverse
 #' @export
 
-SpatialTime <- function(file = "", id = NULL) {
+SpatialTime <- function(file = NULL, id = NULL) {
 
-  tissue_to <- read.csv(file)
+  tissue_to <- file
   tissue_to <- tissue_to %>%
     mutate(barcode = X) %>%
     select(imagerow, imagecol, barcode)
 
-  tissue_from <- data %>%
-    select(contains(id)) %>%
-    filter_if(is.numeric, all_vars((.) != 0))
+  if (!is.null(id)) {
+
+    tissue_from <- data %>%
+      select(contains(id)) %>%
+      filter_if(is.numeric, all_vars((.) != 0))
+  } else {
+    stop("id parameter is missing")
+  }
 
   st_calc <- tissue_to %>%
     rowwise() %>%

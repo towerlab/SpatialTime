@@ -1,14 +1,14 @@
-#'  Spatial2Time
-#'  @param file Seurat object as Input
-#'  @param fil2 Cluster names in Idents
-#'  @param id Export coordinates files
+#' Spatial2Time
+#' @param file Seurat object as Input
+#' @param fil2 Cluster names in Idents
+#' @param id Export coordinates files
 #'
-#'  @details
-#'  This function calculates and adds coordinates values to each line drawn in data frame.
+#' @details
+#' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#'  @import Seurat
-#'  @import tidyverse
-#'  @export
+#' @import Seurat
+#' @import tidyverse
+#' @export
 
 Spatial2Time <- function(file = NULL, file2 = NULL, id = NULL) {
 

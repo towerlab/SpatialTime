@@ -1,15 +1,15 @@
-#'  CoordMerge
-#'  @param files Seurat object as Input
-#'  @param pattern Cluster names in Idents
+#' CoordMerge
+#' @param files Seurat object as Input
+#' @param pattern Cluster names in Idents
 #'
 #'
-#'  @details
-#'  This function calculates and adds coordinates values to each line drawn in data frame.
+#' @details
+#' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#'  @import Seurat
-#'  @import tidyverse
-#'  @import fs
-#'  @export
+#' @import Seurat
+#' @import tidyverse
+#' @import fs
+#' @export
 
 CoordMerge <- function(files = "", pattern = NULL) {
 
@@ -18,3 +18,7 @@ CoordMerge <- function(files = "", pattern = NULL) {
 
   return(rdr)
 }
+
+
+
+

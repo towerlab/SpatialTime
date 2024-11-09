@@ -16,4 +16,6 @@ Imports:
     Seurat,
     testthat,
     tidyverse,
-    usethis
+    usethis,
+    fs,
+    devtools

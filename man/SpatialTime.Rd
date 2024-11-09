@@ -4,7 +4,7 @@
 \alias{SpatialTime}
 \title{SpatialTime}
 \usage{
-SpatialTime(file = "", id = NULL)
+SpatialTime(file = NULL, id = NULL)
 }
 \arguments{
 \item{file}{cluster coordinates file}

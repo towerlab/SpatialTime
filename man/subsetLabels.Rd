@@ -2,27 +2,30 @@
 % Please edit documentation in R/subsetLabels.R
 \name{subsetLabels}
 \alias{subsetLabels}
-\title{subsetLabels
-@param file Seurat object as Input
-@param cluster Cluster names in Idents
-@param export.all Export coordinates files
-@param slice.n Image slice number
-@param dir.out directory output}
+\title{subsetLabels}
 \usage{
 subsetLabels(
   file = NULL,
   cluster = NULL,
   export.all = TRUE,
   slice.n = "slice1",
-  dir.out = ""
+  dir.out = "coords_out"
 )
 }
+\arguments{
+\item{file}{Seurat object as Input}
+
+\item{cluster}{Cluster names in Idents}
+
+\item{export.all}{Export coordinates files}
+
+\item{slice.n}{Image slice number}
+
+\item{dir.out}{directory output}
+}
 \description{
-@details
-This function allows the selection of clusters of interest and exporting their coordinates for further analysis
+subsetLabels
 }
 \details{
-@import Seurat
-@import tidyverse
-@export
+This function allows the selection of clusters of interest and exporting their coordinates for further analysis
 }

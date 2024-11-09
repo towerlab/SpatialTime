@@ -4,7 +4,7 @@
 \alias{SpatialCalc}
 \title{SpatialCalc}
 \usage{
-SpatialCalc(file = "", factor = 1, colors = NULL, tissue = NULL)
+SpatialCalc(file = NULL, factor = 1, colors = NULL, tissue = NULL)
 }
 \arguments{
 \item{file}{Fiji file}

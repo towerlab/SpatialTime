@@ -2,19 +2,20 @@
 % Please edit documentation in R/spatial2time.R
 \name{Spatial2Time}
 \alias{Spatial2Time}
-\title{Spatial2Time
-@param file Seurat object as Input
-@param fil2 Cluster names in Idents
-@param id Export coordinates files}
+\title{Spatial2Time}
 \usage{
 Spatial2Time(file = NULL, file2 = NULL, id = NULL)
 }
+\arguments{
+\item{file}{Seurat object as Input}
+
+\item{id}{Export coordinates files}
+
+\item{fil2}{Cluster names in Idents}
+}
 \description{
-@details
-This function calculates and adds coordinates values to each line drawn in data frame.
+Spatial2Time
 }
 \details{
-@import Seurat
-@import tidyverse
-@export
+This function calculates and adds coordinates values to each line drawn in data frame.
 }

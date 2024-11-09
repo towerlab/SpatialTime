@@ -2,19 +2,18 @@
 % Please edit documentation in R/coordmerge.R
 \name{CoordMerge}
 \alias{CoordMerge}
-\title{CoordMerge
-@param files Seurat object as Input
-@param pattern Cluster names in Idents}
+\title{CoordMerge}
 \usage{
 CoordMerge(files = "", pattern = NULL)
 }
+\arguments{
+\item{files}{Seurat object as Input}
+
+\item{pattern}{Cluster names in Idents}
+}
 \description{
-@details
-This function calculates and adds coordinates values to each line drawn in data frame.
+CoordMerge
 }
 \details{
-@import Seurat
-@import tidyverse
-@import fs
-@export
+This function calculates and adds coordinates values to each line drawn in data frame.
 }

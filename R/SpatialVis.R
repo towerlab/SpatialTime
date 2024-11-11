@@ -12,7 +12,7 @@
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 
-SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", return_obj = F) {
+SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", return_obj = T) {
 
   if (is.null(file) || is.null(st.calc)) {
     stop("Both 'file' and 'st.calc' must be provided.")

@@ -11,16 +11,20 @@
 
 SpatialTime <- function(file = NULL, id = NULL) {
 
+  if (!all(c("row","col","imagerow","imagecol") %in% names(file))) {
+    stop("Is this a coordinate file?")
+  }
+
   tissue_to <- file
   tissue_to <- tissue_to %>%
     mutate(barcode = X) %>%
     select(imagerow, imagecol, barcode)
 
   if (!is.null(id)) {
-
     tissue_from <- data %>%
       select(contains(id)) %>%
       filter_if(is.numeric, all_vars((.) != 0))
+
   } else {
     stop("id parameter is missing")
   }

@@ -14,6 +14,10 @@
 
 SpatialCalc <- function(file = NULL, factor = 1, colors = NULL, tissue = NULL) {
 
+  if (!all(c("X","Y") %in% names(x))) {
+    stop("Is this a fiji output coordinates file?")
+  }
+
   if (!(length(colors) == length(tissue))) {
     stop("Number of reference lines and names should be equal!")
   }

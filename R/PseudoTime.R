@@ -15,8 +15,9 @@
 
 
 PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 2, mean_expr = 0.1) {
-  if (is.null(file)) {
-    stop("Input file is NULL. Please provide a valid Seurat object.")
+
+  if (!is(file, "Seurat")) {
+    stop("File is not a Seurat object.")
   }
 
   if (!assay %in% names(file@assays)) {

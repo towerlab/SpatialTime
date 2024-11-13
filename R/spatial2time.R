@@ -12,6 +12,7 @@
 
 Spatial2Time <- function(file = NULL, file2 = NULL, id = NULL) {
 
+
   tissue_to <- file %>%
     mutate(barcode = ...1) %>%
     select(imagerow, imagecol, barcode)

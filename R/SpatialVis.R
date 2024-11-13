@@ -38,3 +38,33 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
   SpatialFeaturePlot(file, features = "st", images = slice)
 
 }
+
+
+#' GeneVis
+#' @param data Seurat object with pseudotime values in metadata
+#' @param genes Genes to be plotted
+#' @import Seurat
+#' @import tidyverse
+#' @export
+#'
+#' @details
+#' Visualization of genes of interest using reference line as starting point
+#'
+GeneVis <- function(data = NULL, genes = NULL) {
+
+  if (!is(data, "Seurat")) {
+    stop("File is not a Seurat object.")
+  }
+
+  if (is.null(genes)) {
+    stop("Gene names must be provided!")
+  }
+
+  for (gene in genes) {
+    gene_data <- FetchData(data, vars = gene)
+    data[[gene]] <- gene_data
+
+  }
+
+  return(data)
+}

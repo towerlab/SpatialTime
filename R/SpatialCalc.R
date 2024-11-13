@@ -12,7 +12,9 @@
 #' @export
 
 
-SpatialCalc <- function(file = NULL, factor = 1, colors = NULL, tissue = NULL) {
+SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
+
+  x <- read_csv(file)
 
   if (!all(c("X","Y") %in% names(x))) {
     stop("Is this a fiji output coordinates file?")
@@ -23,13 +25,13 @@ SpatialCalc <- function(file = NULL, factor = 1, colors = NULL, tissue = NULL) {
   }
 
   for (i in 1:length(colors)) {
-    file <- file %>%
+    x <- x %>%
       arrange(desc(get(colors[i]))) %>%
       mutate(!!paste0(tissue[i], "_row") := case_when(get(colors[i]) == 255 ~ Y/factor, TRUE ~ 0),
              !!paste0(tissue[i], "_col") := case_when(get(colors[i]) == 255 ~ X/factor, TRUE ~ 0))
   }
 
-  dist <- file %>%
+  dist <- x %>%
     filter_at(vars(ends_with("_row"), ends_with("_col")), any_vars(. > 0)) %>%
     as.data.frame()
 

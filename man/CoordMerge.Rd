@@ -4,7 +4,7 @@
 \alias{CoordMerge}
 \title{CoordMerge}
 \usage{
-CoordMerge(files = "", pattern = NULL)
+CoordMerge(files = "", pattern = "")
 }
 \arguments{
 \item{files}{Seurat object as Input}

@@ -9,7 +9,7 @@ SpatialVis(
   st.calc = NULL,
   spatial.by = c("abs", "rel"),
   slice = "slice1",
-  return_obj = F
+  return_obj = T
 )
 }
 \arguments{

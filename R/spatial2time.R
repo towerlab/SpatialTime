@@ -12,6 +12,16 @@
 
 Spatial2Time <- function(file = NULL, file2 = NULL, id = NULL) {
 
+  columns <- c("row","col","imagerow","imagecol")
+
+  for (i in c(file, file2)) {
+
+    if (!all(columns %in% names(i))) {
+    } else {
+
+      stop("Is this a coordinate file?")
+    }
+  }
 
   tissue_to <- file %>%
     mutate(barcode = ...1) %>%

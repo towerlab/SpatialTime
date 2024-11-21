@@ -14,7 +14,7 @@
 #' @export
 
 
-PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 2, mean_expr = 0.1) {
+PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 2, mean_expr = 0.1, pvalue = 0.05, cores = 2) {
 
   if (!is(file, "Seurat")) {
     stop("File is not a Seurat object.")
@@ -29,10 +29,7 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 2
   fData <- data.frame(gene_short_name = row.names(data), row.names = row.names(data))
   fd <- new('AnnotatedDataFrame', data = fData)
 
-  HSMM <- newCellDataSet(data,
-                         phenoData = pd,
-                         featureData = fd,
-                         lowerDetectionLimit = 0.5,
+  HSMM <- newCellDataSet(data, phenoData = pd, featureData = fd, lowerDetectionLimit = 0.5,
                          expressionFamily = negbinomial.size())
 
   HSMM <- estimateSizeFactors(HSMM)
@@ -48,7 +45,15 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 2
   HSMM <- reduceDimension(HSMM, max_components=2)
   HSMM <- orderCells(HSMM, reverse=FALSE)
 
-  file$ps <- HSMM@phenoData@data[["Pseudotime"]]
+  HSMM_expressed_genes <- row.names(subset(fData(HSMM), num_cells_expressed >= min_cells))
+  HSMM_filtered <- HSMM[HSMM_expressed_genes,]
+  diff_test_res <- differentialGeneTest(HSMM_filtered, fullModelFormulaStr="~sm.ns(st)", cores = cores)
 
-  return(file)
+  diff=diff_test_res[,c("gene_short_name", "pval", "qval","use_for_ordering")]
+  diff=diff[diff$pval < pvalue, ]
+  diff=diff[order(diff$qval),]
+
+  genelist <- row.names(diff)
+
+  return(genelist)
 }

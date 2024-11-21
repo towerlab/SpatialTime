@@ -9,7 +9,9 @@ PseudoTime(
   assay = "RNA",
   min_expr = 0.1,
   min_cells = 2,
-  mean_expr = 0.1
+  mean_expr = 0.1,
+  pvalue = 0.05,
+  cores = 2
 )
 }
 \arguments{

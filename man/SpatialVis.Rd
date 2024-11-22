@@ -9,6 +9,7 @@ SpatialVis(
   st.calc = NULL,
   spatial.by = c("abs", "rel"),
   slice = "slice1",
+  remove.na = F,
   return_obj = T
 )
 }
@@ -20,6 +21,8 @@ SpatialVis(
 \item{spatial.by}{absolute or relative values}
 
 \item{slice}{Select tissue slice}
+
+\item{remove.na}{subset only tissue of spatialtime}
 
 \item{return_obj}{Return object
 SpatialVis}

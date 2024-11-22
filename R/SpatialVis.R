@@ -3,6 +3,7 @@
 #' @param st.calc Spatialtime values
 #' @param spatial.by absolute or relative values
 #' @param slice Select tissue slice
+#' @param remove.na subset only tissue of spatialtime
 #' @param return_obj Return object
 #' SpatialVis
 #' @import Seurat
@@ -12,7 +13,7 @@
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 
-SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", return_obj = T) {
+SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", remove.na = F, return_obj = T) {
 
   if (is.null(file) || is.null(st.calc)) {
     stop("Both 'file' and 'st.calc' must be provided.")
@@ -35,7 +36,14 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
     return(file)
   }
 
-  SpatialFeaturePlot(file, features = "st", images = slice)
+  if (remove.na) {
+
+    sub <- subset(file, subset = st != 0)
+    SpatialFeaturePlot(sub, features = "st", images = slice)
+
+  } else {
+    SpatialFeaturePlot(file, features = "st", images = slice)
+  }
 
 }
 

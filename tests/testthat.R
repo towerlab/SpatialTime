@@ -7,6 +7,9 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
+library(usethis)
+library(devtools)
 library(SpatialTime)
+library(tidyverse)
 
 test_check("SpatialTime")

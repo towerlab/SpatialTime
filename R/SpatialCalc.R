@@ -19,17 +19,15 @@ SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
     stop("Is this a fiji output coordinates file?")
   }
 
-  if (!(length(colors) == length(tissue))) {
-    stop("Number of reference lines and names should be equal!")
-  }
-
-  if (class(factor) == "character") {
-
+  if (is.character(factor)) {
     if (file.exists(factor)) {
       json_data <- fromJSON(factor)
-      factor <- json_data$tissue_hires_scalef
-
+      factor <- as.numeric(json_data$tissue_hires_scalef)
     }
+  }
+
+  if (!(length(colors) == length(tissue))) {
+    stop("Number of reference lines and names should be equal!")
   }
 
   for (i in 1:length(colors)) {

@@ -1,6 +1,6 @@
 #' Spatial2Time
 #' @param file Seurat object as Input
-#' @param fil2 Cluster names in Idents
+#' @param file2 Cluster names in Idents
 #' @param id Export coordinates files
 #'
 #' @details

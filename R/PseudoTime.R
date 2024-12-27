@@ -4,6 +4,8 @@
 #' @param min_expr Minimum gene expression
 #' @param min_cells minimum cells expression
 #' @param mean_expr Mean gene expression
+#' @param pvalue pvalue threashold to filter genes out
+#' @param cores number of CPU cores to use
 #'
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.

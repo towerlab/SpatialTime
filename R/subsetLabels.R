@@ -13,7 +13,6 @@
 #' @export
 
 
-
 subsetLabels <- function(file = NULL, cluster = NULL, export.all = TRUE,
                          slice.n = "slice1", dir.out = "coords_out") {
 

@@ -45,6 +45,7 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
   HSMM <- reduceDimension(HSMM, max_components=2)
   HSMM <- orderCells(HSMM, reverse=FALSE)
 
+  HSMM@phenoData@data[["Pseudotime"]] =HSMM@phenoData@data[["st"]]
   HSMM_expressed_genes <- row.names(subset(fData(HSMM), num_cells_expressed >= min_cells))
   HSMM_filtered <- HSMM[HSMM_expressed_genes,]
   diff_test_res <- differentialGeneTest(HSMM_filtered, fullModelFormulaStr="~sm.ns(st)", cores = cores)

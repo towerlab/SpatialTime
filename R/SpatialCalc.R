@@ -11,7 +11,6 @@
 #' @import tidyverse
 #' @export
 
-
 SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
 
   x <- read_csv(file)
@@ -22,6 +21,15 @@ SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
 
   if (!(length(colors) == length(tissue))) {
     stop("Number of reference lines and names should be equal!")
+  }
+
+  if (class(factor) == "character") {
+
+    if (file.exists(factor)) {
+      json_data <- fromJSON(factor)
+      factor <- json_data$tissue_hires_scalef
+
+    }
   }
 
   for (i in 1:length(colors)) {

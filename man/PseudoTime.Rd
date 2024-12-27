@@ -24,6 +24,10 @@ PseudoTime(
 \item{min_cells}{minimum cells expression}
 
 \item{mean_expr}{Mean gene expression}
+
+\item{pvalue}{pvalue threashold to filter genes out}
+
+\item{cores}{number of CPU cores to use}
 }
 \description{
 PseudoTime

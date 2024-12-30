@@ -11,7 +11,8 @@ PseudoTime(
   min_cells = 3,
   mean_expr = 0.1,
   pvalue = 0.05,
-  cores = 2
+  cores = 4,
+  heatmap_plot = F
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ PseudoTime(
 \item{pvalue}{pvalue threashold to filter genes out}
 
 \item{cores}{number of CPU cores to use}
+
+\item{heatmap_plot}{description}
 }
 \description{
 PseudoTime

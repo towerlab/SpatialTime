@@ -24,6 +24,10 @@ SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
       json_data <- fromJSON(factor)
       factor <- as.numeric(json_data$tissue_hires_scalef)
     }
+  } else if (is.numeric(factor)) {
+    factor <- as.numeric(factor)
+  } else {
+    stop("Factor must be either a numeric value or a path to a JSON file.")
   }
 
   if (!(length(colors) == length(tissue))) {

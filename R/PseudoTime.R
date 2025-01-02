@@ -60,7 +60,8 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
   genelist <- row.names(diff)
 
   if (heatmap_plot) {
-    plot_pseudotime_heatmap(HSMM[genelist], num_clusters = 3, show_rownames = T, return_heatmap = T, cores = cores)
+    plot <- plot_pseudotime_heatmap(HSMM[genelist], num_clusters = 3, show_rownames = T, return_heatmap = T, cores = cores)
+    return(plot)
   }
 
   return(file)

@@ -18,7 +18,7 @@
 
 
 PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3,
-                       mean_expr = 0.1, pvalue = 0.05, cores = 4, heatmap_plot = F) {
+                       mean_expr = 0.1, pvalue = 0.05, cores = 4) {
 
   if (!is(file, "Seurat")) {
     stop("File is not a Seurat object.")
@@ -59,10 +59,8 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
 
   genelist <- row.names(diff)
 
-  if (heatmap_plot) {
-    plot <- plot_pseudotime_heatmap(HSMM[genelist], num_clusters = 3, show_rownames = T, return_heatmap = T, cores = cores)
-    return(plot)
-  }
+  hsmm_sub <- HSMM[genelist,]
 
-  return(file)
+  return(hsmm_sub)
+
 }

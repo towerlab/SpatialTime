@@ -13,14 +13,17 @@
 #' @export
 
 
-subsetLabels <- function(file = NULL, cluster = NULL, export.all = TRUE,
-                         slice.n = "slice1", dir.out = "coords_out") {
+subsetLabels <- function(file = "", cluster = NULL, export.all = TRUE,
+                         slice.n = "slice1", dir.out = "") {
 
-  if (!is(file, "Seurat")) {
-    stop("File is not a Seurat object.")
+  if (!file.exists(file)) {
+    stop("File does not exist.")
   }
 
+  data <- readRDS(file)
+
   if (export.all) {
+
     if (is.null(cluster)) {
       stop("Cluster IDs were not specified.")
     }
@@ -29,31 +32,23 @@ subsetLabels <- function(file = NULL, cluster = NULL, export.all = TRUE,
       stop("Number of clusters should be less than or equal to 3.")
     }
 
-    if (!all(cluster %in% Idents(file))) {
+    if (!all(cluster %in% Idents(data))) {
       stop("One or more specified clusters do not exist in the data.")
     }
 
     clstrs <- list()
 
     for (i in seq_along(cluster)) {
-      clstrs[[i]] <- subset(file, idents = cluster[i])
 
-      if (!dir.exists(dir.out)) {
-        dir.create(dir.out)
-      }
+      clstrs[[i]] <- subset(data, idents = cluster[i])
 
-      write.csv(clstrs[[i]]@images[[slice.n]]@coordinates,
-                file.path(dir.out, paste0(cluster[i], "_coordinates.csv")))
+      write.csv(clstrs[[i]]@images[[slice.n]]@coordinates, file.path(dir.out, paste0(cluster[i], "_coordinates.csv")))
     }
 
     return(clstrs)
 
   } else {
-
-    if (!dir.exists(dir.out)) {
-      dir.create(dir.out)
-    }
-
-    write.csv(file@images[[slice.n]]@coordinates, file.path(dir.out, "all_coordinates.csv"))
+    write.csv(data@images[[slice.n]]@coordinates,
+              file.path(dir.out, "all_coordinates.csv"))
   }
 }

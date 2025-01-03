@@ -11,6 +11,7 @@
 #' @import tidyverse
 #' @export
 
+
 SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
 
   x <- read_csv(file)

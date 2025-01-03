@@ -45,7 +45,7 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
   ordering_genes <- subset(disp_table, mean_expression >= mean_expr & 2*dispersion_empirical >= dispersion_fit)$gene_id
   HSMM <- setOrderingFilter(HSMM, ordering_genes)
 
-  HSMM <- reduceDimension(HSMM, max_components=2)
+  HSMM <- reduceDimension(HSMM, max_components=2, auto_param_selection = F)
   HSMM <- orderCells(HSMM, reverse=FALSE)
 
   HSMM@phenoData@data[["Pseudotime"]]=HSMM@phenoData@data[["st"]]

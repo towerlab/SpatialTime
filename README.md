@@ -13,9 +13,7 @@ Development version install:
 # install.packages("devtools")
 devtools::install_github("dimitrisokolowskei/SpatialTime")
 ```
-
-# Basic usage
-
-# Complete Documentation
+# Vignette 
+Complete SpatialTime package documentation and vignette can be found [here](dimitrisokolowskei.github.io/SpatialTime/).
 
 # Citation

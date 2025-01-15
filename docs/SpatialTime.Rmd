@@ -1,0 +1,15 @@
+---
+title: "SpatialTime"
+output:
+  html_document:
+    fig_caption: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+---
+
+# SpatialTime 
+This is spatial time package vignette 
+
+## Installation

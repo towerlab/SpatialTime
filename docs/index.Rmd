@@ -1,9 +1,10 @@
 ---
-title: "SpatialTime"
+title: "SpatialTime Package"
+author: Dimitri Sokolowskei, Alex Trostle, Robert Tower
 output:
   html_document:
     fig_caption: yes
-    theme: cerulean
+    theme: bootstrap
     toc: yes
     toc_depth: 3
     toc_float: yes
@@ -13,9 +14,99 @@ output:
 Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to access gene expression, pathways scores and co-expression gene modules by establishing spatially defined reference points and calculating ST spots distances against the arbitrarily defined reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
 
 ## Installation
+Package install via CRAN:
+```sh
+install.packages("SpatialTime")
+```
+Development version install:
 ```sh
 #(install.packages("devtools")
 devtools::install_github("dimitrisokolowskei/SpatialTime")
 ```
+## Prerequisites
+SpatialTime requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
-## Basic Usage
+## Dataset 
+For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL). The seurat object can be downloaded [here](put_link).
+
+## Analysis Approaches
+SpatialTime supports different strategies for delimiting spatial reference lines by: 1) Manually defining your references lines using imaging *softwares* such as Fiji/ImageJ; 2) Selecting single cell types based on clusters identities.  
+
+## 1. Fiji/ImageJ based approach
+1.1 Fiji is a broadly used open source scientific image processing tool. Fiji allows drawing the reference lines of interest and exporting each delineated pixel as an XY coordinates later used for euclidean distance calculation. Fiji can be downloaded [here](https://imagej.net/software/fiji/) and a brief Fiji tutorial on how draw and export references lines can be found [here](to put).
+
+1.2 First, import your Seurat ST object using ```readRDS()``` function. Then, we proceed using ```subsetLabels()``` which allows us to export ST clusters coordinates as excel sheets.
+```sh
+options(future.globals.maxSize=500000*1024^2)
+
+# Required packages
+library(Seurat)
+library(tidyverse)
+library(Hmisc)
+library(jsonlite)
+library(monocle)
+library(devtools)
+library(testthat)
+library(usethis)
+library(pkgdown)
+library(SpatialTime)
+
+# Import ST object
+fracture <- readRDS("R/fracture_original_annotation.rds")
+
+# Export clusters coordinates 
+subsetLabels("R/fracture_original_annotation.rds", cluster = c("MarrowFibrin", "Periosteum", "Cortical"), slice.n = "slice1", export.all = T, dir.out = "R/Excel/")
+```
+
+1.3 Import Fiji XY coordinates previously prepared. Furthermore, we need to match the reference line colors to their respective tissue/region names. Be aware that the tissue names must exist in your Seurat object identities. Then, ```SpatialCalc()``` function.  
+```sh
+fiji <- read.csv("R/fiji_output.csv")
+colors <- c("Red", "Green", "Blue") 
+tissue <- c("MarrowFibrin", "Periosteum", "Cortical") 
+
+data <- SpatialCalc("R/fiji_output.csv", factor = "R/scalefactors_json.json", colors = colors, tissue = tissue) 
+```
+
+1.4 
+```sh
+# Calculate minimum spots distances from reference line of interest
+file <- read.csv("R/Excel/Periosteum_coordinates.csv")
+
+sp <- SpatialTime(file, "MarrowFibrin")
+sp
+```
+
+1.5 
+```sh
+# Visualization spatialtime gradient ----
+vis <- SpatialVis(fracture, sp, spatial.by = "rel", remove.na = T, return_obj = T)
+vis
+View(vis@meta.data)
+```
+
+1.6 
+```sh
+# Calculate pseudotime ----
+ps <- PseudoTime(vis, assay = "SCT", min_expr = 0.1, min_cells = 5, mean_expr = 0.1, cores = 12)
+View(ps@meta.data)
+
+p <- plot_pseudotime_heatmap(ps, num_clusters = 3, cores = 12, show_rownames = T, return_heatmap = T)
+```
+
+1.7 Basic Visualization 
+```sh
+des <- GeneVis(ps, genes = c("HBA1","COL1A1","SOX9"))
+View(des@meta.data)
+
+
+ggplot(des@meta.data) +
+  geom_smooth(aes(st, COL1A1, color = "COL1A1"), method = "loess", span = 1, se = FALSE) +
+  geom_smooth(aes(st, SOX9, color = "SOX9"), method = "loess", span = 1, se = FALSE) +
+  scale_color_manual(values = c("COL1A1" = "#E69F00", "SOX9" = "#56B4E9")) +
+  theme_classic()
+```
+
+## 2. Cluster based approach
+SpatialTime can also be obtained between two distinct cell type clusters previously annotated and present in your object ```Idents()```. The steps are pretty straightforward and much alike Fiji based strategy, with the benefit of not using third party tools to obtained comprehensive and significant biological information. 
+
+2.1

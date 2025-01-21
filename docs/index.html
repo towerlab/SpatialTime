@@ -1540,10 +1540,7 @@ library(tidyverse)
 library(Hmisc)
 library(jsonlite)
 library(monocle)
-library(devtools)
-library(testthat)
-library(usethis)
-library(pkgdown)
+library(fs)
 library(SpatialTime)
 
 # Import ST object
@@ -1592,11 +1589,42 @@ ggplot(des@meta.data) +
 <h2>2. Cluster based approach</h2>
 <p>SpatialTime can also be obtained between two distinct cell type
 clusters previously annotated and present in your object
-<code>Idents()</code>. The steps are pretty straightforward and much
-alike Fiji based strategy, with the benefit of not using third party
-tools to obtained comprehensive and significant biological
-information.</p>
+<code>Idents()</code>. The basic underlying idea is that the outermost
+spots of your reference cluster will be used to calculate the distance
+between the cluster of interest. The steps are pretty straightforward
+and much alike Fiji based strategy, with the benefit of not using third
+party tools to obtained comprehensive and significant biological
+information, although the freedom to delimit whatever area in the
+histology section become cell type restricted.</p>
 <p>2.1</p>
+<pre class="sh"><code>fracture &lt;- readRDS(&quot;R/fracture_original_annotation.rds&quot;)
+Idents(fracture)
+
+subset2Labels(fracture, cluster = c(&quot;Bone Marrow&quot;, &quot;Periosteum&quot;), export.all = T, dir.out = &quot;R/All_peri/&quot;)</code></pre>
+<p>2.2</p>
+<pre class="sh"><code># Selecting directories specific coordinates ----
+peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Periosteum&quot;)
+cort &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Bone Marrow&quot;)</code></pre>
+<p>2.3</p>
+<pre class="sh"><code># Calculate SpatialTime between clusters of interest ----
+sp &lt;- Spatial2Time(cort, peri)</code></pre>
+<p>2.4</p>
+<pre class="sh"><code># Visualize spots gradient ----
+vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1.1&quot;, return_obj = F)
+vis</code></pre>
+<p>2.5</p>
+<pre class="sh"><code># Pseudotime Calculation ----
+ps &lt;- PseudoTime(vis, assay = &quot;SCT&quot;)</code></pre>
+<p>2.6</p>
+<pre class="sh"><code># Visualze Genes of interest
+des &lt;- GeneVis(ps, genes = c(&quot;HBA1&quot;,&quot;COL1A1&quot;,&quot;SOX9&quot;))
+View(des@meta.data)
+
+ggplot(des@meta.data) +
+  geom_smooth(aes(st, COL1A1, color = &quot;COL1A1&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +
+  geom_smooth(aes(st, SOX9, color = &quot;SOX9&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +
+  scale_color_manual(values = c(&quot;COL1A1&quot; = &quot;#E69F00&quot;, &quot;SOX9&quot; = &quot;#56B4E9&quot;)) +
+  theme_classic()</code></pre>
 </div>
 </div>
 

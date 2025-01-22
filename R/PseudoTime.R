@@ -20,13 +20,9 @@
 PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3,
                        mean_expr = 0.1, pvalue = 0.05, cores = 4, return_obj = F) {
 
-  if (!is(file, "Seurat")) {
-    stop("File is not a Seurat object.")
-  }
+  if (!is(file, "Seurat")) {stop("File is not a Seurat object.")}
 
-  if (!assay %in% names(file@assays)) {
-    stop(paste("Assay", assay, "not found in the Seurat object."))
-  }
+  if (!assay %in% names(file@assays)) {stop(paste("Assay", assay, "not found in the Seurat object."))}
 
   data <- as(as.matrix(file[[assay]]@data), 'sparseMatrix')
   pd <- new('AnnotatedDataFrame', data = file@meta.data)
@@ -57,18 +53,14 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
   diff=diff[diff$pval < pvalue, ]
   diff=diff[order(diff$qval),]
 
+  file@meta.data <- HSMM@phenoData@data
   genelist <- row.names(diff)
-
   hsmm_sub <- HSMM[genelist,]
 
   if (return_obj) {
-    return(HSMM)
-
-    else {
-      return(hsmm_sub)
-    }
+    return(file)
   }
 
-  #return(hsmm_sub)
+  return(hsmm_sub)
 
 }

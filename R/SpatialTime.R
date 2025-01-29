@@ -1,8 +1,8 @@
 #' SpatialTime
-#' @param file cluster coordinates file
-#' @param id line as reference
-#'
-#'  @details
+#' @param file file containing clusters coordinates scaled by image factor
+#' @param reference cluster as reference
+#' @param compare clusters spots to compare against reference
+#' @details
 #'  This function calculates and adds coordinates values to each line drawn in data frame.
 #'
 #' @import Seurat

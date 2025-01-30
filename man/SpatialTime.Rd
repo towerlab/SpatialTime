@@ -4,16 +4,18 @@
 \alias{SpatialTime}
 \title{SpatialTime}
 \usage{
-SpatialTime(file = NULL, id = NULL)
+SpatialTime(file = NULL, reference = NULL, compare = NULL)
 }
 \arguments{
-\item{file}{cluster coordinates file}
+\item{file}{file containing clusters coordinates scaled by image factor}
 
-\item{id}{line as reference
+\item{reference}{cluster as reference}
 
-@details
-This function calculates and adds coordinates values to each line drawn in data frame.}
+\item{compare}{clusters spots to compare against reference}
 }
 \description{
 SpatialTime
+}
+\details{
+This function calculates and adds coordinates values to each line drawn in data frame.
 }

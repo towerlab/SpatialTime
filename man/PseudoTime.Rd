@@ -12,7 +12,7 @@ PseudoTime(
   mean_expr = 0.1,
   pvalue = 0.05,
   cores = 4,
-  heatmap_plot = F
+  return_obj = F
 )
 }
 \arguments{

@@ -1551,26 +1551,35 @@ subsetLabels(&quot;R/fracture_original_annotation.rds&quot;, cluster = c(&quot;M
 <p>1.3 Import Fiji XY coordinates previously prepared. Furthermore, we
 need to match the reference line colors to their respective
 tissue/region names. Be aware that the tissue names must exist in your
-Seurat object identities. Then, <code>SpatialCalc()</code> function.</p>
+Seurat object identities. Then, by running <code>SpatialCalc()</code>
+each XY coordinate can be transformed accordingly to the slice
+factor.</p>
 <pre class="sh"><code>fiji &lt;- read.csv(&quot;R/fiji_output.csv&quot;)
 colors &lt;- c(&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;) 
 tissue &lt;- c(&quot;MarrowFibrin&quot;, &quot;Periosteum&quot;, &quot;Cortical&quot;) 
 
 data &lt;- SpatialCalc(&quot;R/fiji_output.csv&quot;, factor = &quot;R/scalefactors_json.json&quot;, colors = colors, tissue = tissue) </code></pre>
-<p>1.4</p>
+<p>1.4 At this step, SpatialTime distance are ready to be calculated.
+First, import your cluster type coordinates as reference and calculate
+the spots distances against other cluster.</p>
 <pre class="sh"><code># Calculate minimum spots distances from reference line of interest
 file &lt;- read.csv(&quot;R/Excel/Periosteum_coordinates.csv&quot;)
 
 sp &lt;- SpatialTime(file, &quot;MarrowFibrin&quot;)
 sp</code></pre>
-<p>1.5</p>
+<p>1.5 SpatialTime distance gradient can be assessed using:</p>
 <pre class="sh"><code># Visualization spatialtime gradient ----
 vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, remove.na = T, return_obj = T)
 vis
 View(vis@meta.data)</code></pre>
-<p>1.6</p>
+<p>1.6 <code>Pseudotime</code> allows calculating and adding pseudotime
+values in the object metadata. By replacing the calculated spatialtime
+values into their respective pseudotime, it becomes possible to infer
+which genes are differential expressed as a gradient of distance.
+Briefly, we can assess which genes are up or downregulated as you move
+away from the reference line.</p>
 <pre class="sh"><code># Calculate pseudotime ----
-ps &lt;- PseudoTime(vis, assay = &quot;SCT&quot;, min_expr = 0.1, min_cells = 5, mean_expr = 0.1, cores = 12)
+ps &lt;- PseudoTime(vis, assay = &quot;SCT&quot;, min_expr = 0.1, min_cells = 5, mean_expr = 0.1, cores = 8                                                       )
 View(ps@meta.data)
 
 p &lt;- plot_pseudotime_heatmap(ps, num_clusters = 3, cores = 12, show_rownames = T, return_heatmap = T)</code></pre>

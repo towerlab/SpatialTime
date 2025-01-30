@@ -74,6 +74,7 @@ sp
 ```
 
 1.5 
+SpatialTime distance gradient can be assessed using:
 ```sh
 # Visualization spatialtime gradient ----
 vis <- SpatialVis(fracture, sp, spatial.by = "rel", remove.na = T, return_obj = T)
@@ -82,9 +83,10 @@ View(vis@meta.data)
 ```
 
 1.6 
+```Pseudotime``` allows calculating and adding pseudotime values in the object metadata. By replacing the calculated spatialtime values into their respective pseudotime, it becomes possible to infer which genes are differential expressed as a gradient of distance. Briefly, we can assess which genes are up or downregulated as you move away from the reference line.  
 ```sh
 # Calculate pseudotime ----
-ps <- PseudoTime(vis, assay = "SCT", min_expr = 0.1, min_cells = 5, mean_expr = 0.1, cores = 12)
+ps <- PseudoTime(vis, assay = "SCT", min_expr = 0.1, min_cells = 5, mean_expr = 0.1, cores = 8                                                       )
 View(ps@meta.data)
 
 p <- plot_pseudotime_heatmap(ps, num_clusters = 3, cores = 12, show_rownames = T, return_heatmap = T)

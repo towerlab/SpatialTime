@@ -49,8 +49,9 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 
 
 #' GeneVis
-#' @param data Seurat object with pseudotime values in metadata
-#' @param genes Genes to be plotted
+#' @param file Seurat object with pseudotime values in metadata
+#' @param column Genes to be plotted
+#' @param signal Selecting wheter genes or module pathways to visualize
 #' @import Seurat
 #' @import tidyverse
 #' @export
@@ -58,21 +59,40 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @details
 #' Visualization of genes of interest using reference line as starting point
 #'
-GeneVis <- function(data = NULL, genes = NULL) {
+GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway")) {
 
-  if (!is(data, "Seurat")) {
-    stop("File is not a Seurat object.")
+  if (is.null(file) || class(file) != "Seurat") {
+    stop("Error. File not found or format not supported.")
   }
 
-  if (is.null(genes)) {
-    stop("Gene names must be provided!")
+  if (is.null(column)) {
+    stop("Basic parameters are missing.")
   }
 
-  for (gene in genes) {
-    gene_data <- FetchData(data, vars = gene)
-    data[[gene]] <- gene_data
+  signal <- match.arg(signal)
 
+  # Need to add error handling here
+  if (signal == "gene") {
+    genes <- FetchData(file, vars = column)
+  } else {
+    genes <- ps@meta.data[, column]
   }
 
-  return(data)
+  df <- file@meta.data %>%
+    mutate(x = rownames(file@meta.data)) %>%
+    select("x","st")
+
+  q <- cbind(df, genes)
+
+  df_long <- melt(q, id.vars = c("x", "st"))
+
+  p <- ggplot(df_long, aes(x = st, y = value, color = variable))
+
+  for (var in unique(df_long$variable)) {
+    p <- p + geom_smooth(data = subset(df_long, variable == var), aes(x = st, y = value),
+                         method = "loess", span = 1.5, se = FALSE) + theme_classic()
+  }
+
+  return(p)
+
 }

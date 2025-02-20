@@ -4,12 +4,14 @@
 \alias{GeneVis}
 \title{GeneVis}
 \usage{
-GeneVis(data = NULL, genes = NULL)
+GeneVis(file = NULL, column = NULL, signal = c("gene", "pathway"))
 }
 \arguments{
-\item{data}{Seurat object with pseudotime values in metadata}
+\item{file}{Seurat object with pseudotime values in metadata}
 
-\item{genes}{Genes to be plotted}
+\item{column}{Genes to be plotted}
+
+\item{signal}{Selecting wheter genes or module pathways to visualize}
 }
 \description{
 GeneVis

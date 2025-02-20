@@ -75,7 +75,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway")) {
   if (signal == "gene") {
     genes <- FetchData(file, vars = column)
   } else {
-    genes <- ps@meta.data[, column]
+    genes <- file@meta.data[, column]
   }
 
   df <- file@meta.data %>%

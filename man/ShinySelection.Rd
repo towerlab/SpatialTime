@@ -2,9 +2,9 @@
 % Please edit documentation in R/Shinyapp.R
 \name{ShinySelection}
 \alias{ShinySelection}
-\title{ShinyApp}
+\title{ShinySelection}
 \usage{
-ShinySelection(file = NULL, file.name = NULL)
+ShinySelection(file = NULL, file.name = "selected_spots.csv")
 }
 \arguments{
 \item{file}{Seurat object}
@@ -12,7 +12,7 @@ ShinySelection(file = NULL, file.name = NULL)
 \item{file.name}{Coordinates spots output file}
 }
 \description{
-ShinyApp
+ShinySelection
 }
 \details{
 Shiny app for manual spots selection and coordinates export.

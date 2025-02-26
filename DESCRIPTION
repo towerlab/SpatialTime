@@ -18,4 +18,7 @@ Imports:
     tidyverse,
     usethis,
     fs,
-    devtools
+    devtools,
+    shiny,
+    plotly,
+    umap

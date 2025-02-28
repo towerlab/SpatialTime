@@ -6,7 +6,7 @@
 #' @param mean_expr Mean gene expression
 #' @param pvalue pvalue threashold to filter genes out
 #' @param cores number of CPU cores to use
-#' @param heatmap_plot plot monocle heatmap
+#' @param return_obj plot monocle heatmap
 #'
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
@@ -76,7 +76,7 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
 #' @param mean_expr Mean gene expression
 #' @param pvalue pvalue threashold to filter genes out
 #' @param cores number of CPU cores to use
-#' @param return_plot plot monocle heatmap
+#' @param return_obj plot monocle heatmap
 #'
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.

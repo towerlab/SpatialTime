@@ -1,20 +1,18 @@
 #' subsetLabels
 #' @param file Seurat object as Input
 #' @param cluster Cluster names in Idents
-#' @param export.all Export coordinates files
+#' @param export.all Export coordinates of all clusters in image
 #' @param slice.n Image slice number
-#' @param dir.out directory output
+#' @param dir.out Ouput directory name
 #'
 #' @details
-#' This function allows the selection of clusters of interest and exporting their coordinates for further analysis
+#' This function allows the selection of clusters of interest and exporting their coordinates
 #'
 #' @import Seurat
 #' @import tidyverse
 #' @export
 
-
-subsetLabels <- function(file = "", cluster = NULL, export.all = TRUE,
-                         slice.n = "slice1", dir.out = "") {
+subsetLabels <- function(file = "", cluster = NULL, export.all = F, slice.n = "slice1", dir.out = "") {
 
   if (!file.exists(file)) {
     stop("File does not exist.")
@@ -26,7 +24,7 @@ subsetLabels <- function(file = "", cluster = NULL, export.all = TRUE,
 
   data <- readRDS(file)
 
-  if (export.all) {
+  if (!export.all) {
 
     if (is.null(cluster)) {
       stop("Cluster IDs were not specified.")

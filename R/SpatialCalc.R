@@ -1,11 +1,11 @@
 #' SpatialCalc
-#' @param file Fiji file
-#' @param factor Scale factor
-#' @param colors Line colors
-#' @param tissue Tissue ID
+#' @param file Fiji file containing drawed pixel coordinates
+#' @param factor Seurat image scale factor
+#' @param colors Fiji line colors
+#' @param tissue Cluster identities assigned
 #'
 #' @details
-#' This function calculates and adds coordinates values to each line drawn in data frame.
+#'Scale exported clusters coordinates to their respective drawed line colors using image factor
 #'
 #' @import Seurat
 #' @import tidyverse

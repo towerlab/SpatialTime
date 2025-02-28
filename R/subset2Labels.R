@@ -5,7 +5,7 @@
 #' @param dir.out directory output
 #'
 #' @details
-#' This function allows the selection of clusters of interest and exporting their coordinates for further analysis
+#' Export clusters coordinates and all their resptive slices
 #'
 #' @import Seurat
 #' @import tidyverse

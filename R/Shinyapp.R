@@ -11,7 +11,6 @@
 #' @import umap
 #' @export
 
-
 ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
 
   spatial_coords <- GetTissueCoordinates(file)
@@ -206,11 +205,6 @@ ShinySpots <- function(seurat_obj = NULL, coord_file = NULL, slice.n = "slice1")
   }
 
   file <- read.csv(coord_file)
-
-  if (!file.exists(file)) {
-    stop("File does not exist.")
-  }
-
   labels <- file$barcode
 
   sub <- subset(seurat_obj, subset = barcode %in% labels)

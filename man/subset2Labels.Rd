@@ -19,5 +19,5 @@ subset2Labels(data = NULL, cluster = NULL, export.all = TRUE, dir.out = "")
 subset2Labels
 }
 \details{
-This function allows the selection of clusters of interest and exporting their coordinates for further analysis
+Export clusters coordinates and all their resptive slices
 }

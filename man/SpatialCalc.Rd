@@ -7,17 +7,17 @@
 SpatialCalc(file = "", factor = 1, colors = NULL, tissue = NULL)
 }
 \arguments{
-\item{file}{Fiji file}
+\item{file}{Fiji file containing drawed pixel coordinates}
 
-\item{factor}{Scale factor}
+\item{factor}{Seurat image scale factor}
 
-\item{colors}{Line colors}
+\item{colors}{Fiji line colors}
 
-\item{tissue}{Tissue ID}
+\item{tissue}{Cluster identities assigned}
 }
 \description{
 SpatialCalc
 }
 \details{
-This function calculates and adds coordinates values to each line drawn in data frame.
+Scale exported clusters coordinates to their respective drawed line colors using image factor
 }

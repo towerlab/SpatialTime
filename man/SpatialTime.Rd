@@ -17,5 +17,5 @@ SpatialTime(file = NULL, reference = NULL, compare = NULL)
 SpatialTime
 }
 \details{
-This function calculates and adds coordinates values to each line drawn in data frame.
+Calculates euclidean distance of Fiji reference lines and cluster establishing a distance gradient
 }

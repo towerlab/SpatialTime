@@ -7,9 +7,9 @@
 Spatial2Time(file = NULL, file2 = NULL, id = NULL)
 }
 \arguments{
-\item{file}{Seurat object as Input}
+\item{file}{Seurat's cluster coordinates as input}
 
-\item{file2}{Cluster names in Idents}
+\item{file2}{Seurat's reference cluster coordinates as input}
 
 \item{id}{Export coordinates files}
 }

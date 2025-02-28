@@ -7,7 +7,7 @@
 subsetLabels(
   file = "",
   cluster = NULL,
-  export.all = TRUE,
+  export.all = F,
   slice.n = "slice1",
   dir.out = ""
 )
@@ -17,15 +17,15 @@ subsetLabels(
 
 \item{cluster}{Cluster names in Idents}
 
-\item{export.all}{Export coordinates files}
+\item{export.all}{Export coordinates of all clusters in image}
 
 \item{slice.n}{Image slice number}
 
-\item{dir.out}{directory output}
+\item{dir.out}{Ouput directory name}
 }
 \description{
 subsetLabels
 }
 \details{
-This function allows the selection of clusters of interest and exporting their coordinates for further analysis
+This function allows the selection of clusters of interest and exporting their coordinates
 }

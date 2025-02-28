@@ -1518,12 +1518,130 @@ vignette.</p>
 <div id="analysis-approaches" class="section level2">
 <h2>Analysis Approaches</h2>
 <p>SpatialTime supports different strategies for delimiting spatial
-reference lines by: 1) Manually defining your references lines using
-imaging <em>softwares</em> such as Fiji/ImageJ; 2) Selecting single cell
-types based on clusters identities.</p>
+reference lines by: 1) Manually defining references spots using a
+build-in Shiny App; 2) Selecting single cell types based on clusters
+identities; 3) Manually defining references lines using imaging
+<em>softwares</em> such as Fiji/ImageJ;</p>
+</div>
+<div id="individual-spots-selection" class="section level2">
+<h2>1. Individual Spots Selection</h2>
+<p>1.1 First, import processed Seurat object together with libraries
+required.</p>
+<pre class="sh"><code># Libraries
+library(Seurat)
+library(tidyverse)
+library(Hmisc)
+library(jsonlite)
+library(monocle)
+library(fs)
+library(SpatialTime)
+
+# set.seed for reproducibilty 
+set.seed(12345)
+
+# Import object
+fracture &lt;- readRDS(&quot;R/TrkA_annotation.rds&quot;)</code></pre>
+<p>1.2 Export cluster’s XY coordinates of interess. Make sure that cell
+types labels are in Seurat object <code>Idents()</code>. In case they’re
+not, clusters labels from <code>seurat@meta.data</code> can be added
+into <code>Idents()</code>. For instance:</p>
+<pre class="sh"><code>Idents(fracture) # Check cluster names in Seurat object identity
+Idents(fracture) &lt;- fracture$cluster_labels # Add cluster label from metadata into identity
+
+# Export cell type coordinates to desured directory
+subset2Labels(fracture, cluster = c(&quot;Blastema&quot;, &quot;Nailbed&quot;), dir.out = &quot;R/All_peri/&quot;)</code></pre>
+<p>1.3 Once clusters coordinates to be compared against to have been
+exported, we’ll have to select our reference spots to establish the
+reference point for gradient distance. Using a build-in Shiny app allows
+the manual selection of how many spots in a sample slice as reference.
+To navigate trought the app, use <code>shift+mouse</code> to move around
+the sample and <code>ctrl+left click</code> to select the spots. In the
+top right corner there’s <code>+</code> and <code>-</code> signs,
+allowing use to zoom in or out. When spots selection are done, click
+<code>Export Selected Spots</code> and close the Shiny app.</p>
+<pre class="sh"><code># Selecting reference spots 
+app &lt;- ShinySelection(fracture)</code></pre>
+<p>By importing an cluster coordinates and reference spots previouly
+selected, SpatialTime distance gradient can be calculated. For example,
+using the cluster labeled as <code>blastema</code>, it follows:</p>
+<pre class="sh"><code># Import coordinates of cluster and reference spots 
+peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Blastema&quot;)
+ref &lt;- ShinySpots(fracture, coord_file = &quot;selected_spots.csv&quot;)
+# Calculate SpatialTime between cluster and reference ----
+sp &lt;- SpatialShinyTime(peri, ref)</code></pre>
+<p>The visualization of gradient distance is a import step since ensures
+that the desired distance axis between the clusters of interest is
+correct for the following steps. Additionaly, by subsetting out cells,
+using <code>subset</code> function. that were not included in the
+gradient distance calculation is recommended, since it allows a cleaner
+gradient visualization and faster processing for later steps</p>
+<pre class="sh"><code># Visualize spots gradient 
+vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1&quot;, return_obj = F)
+vis
+
+# Subset out spots which spatialtime (st) value were not calculated
+vis &lt;- subset(vis, subset = st != 0)</code></pre>
+<pre class="sh"><code># Calculate pseudotime and visualize genes differentialy expressed across distance gradient
+ps &lt;- Pseudo2Time(vis, assay = &quot;SCT&quot;, cores = 8, return_obj = F)
+p &lt;- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
+p</code></pre>
+<pre class="sh"><code># Visualize genes across pseudotime only 
+ps &lt;- Pseudo2Time(vis, assay = &quot;SCT&quot;, cores = 8, return_obj = T)
+GeneVis(file = ps, column = c(&quot;PDGFRA&quot;, &quot;HBA1&quot;, &quot;SOX9&quot;), signal = &quot;gene&quot;)</code></pre>
+<pre class="sh"><code># Gene list pathways 
+osteo &lt;- c(&quot;Alpl&quot;,&quot;Bglap&quot;,&quot;Bglap2&quot;,&quot;Col1a1&quot;,&quot;Col1a2&quot;,&quot;Dmp1&quot;,&quot;Ibsp&quot;,&quot;Mef2c&quot;,&quot;Postn&quot;,
+           &quot;Runx2&quot;,&quot;Sp7&quot;,&quot;Sparc&quot;,&quot;Phex&quot;,&quot;Satb2&quot;,&quot;Pth1r&quot;,&quot;Ostn&quot;,&quot;Car3&quot;)
+
+angio &lt;- c(&quot;Cdh5&quot;,&quot;Ddit3&quot;,&quot;S1pr1&quot;,&quot;Ankrd17&quot;,&quot;Lyl1&quot;,&quot;Mmp2&quot;,&quot;Reck&quot;,&quot;Acvrl1&quot;)
+
+# Add gene modules in object with pseudotime calculated
+gene_modules &lt;- list(Module1 = osteo, Module2 = angio)
+module &lt;- AddModuleScore(vis, features = gene_modules, assay = &quot;SCT&quot;, name = &quot;cluster&quot;) 
+GeneVis(file = ps, column = c(&quot;cluster1&quot;, &quot;cluster2&quot;), signal = &quot;pathway&quot;)</code></pre>
+</div>
+<div id="cluster-selection-based-approach" class="section level2">
+<h2>2. Cluster selection based approach</h2>
+<p>SpatialTime can also be obtained between two distinct cell type
+clusters previously annotated and present in your object
+<code>Idents()</code>. The basic underlying idea is that the outermost
+spots of your reference cluster will be used to calculate the distance
+between the cluster of interest. The steps are pretty straightforward
+and much alike Fiji based strategy, with the benefit of not using third
+party tools to obtained comprehensive and significant biological
+information, although the freedom to delimit whatever area in the
+histology section become cell type restricted.</p>
+<p>2.1</p>
+<pre class="sh"><code>fracture &lt;- readRDS(&quot;R/fracture_original_annotation.rds&quot;)
+Idents(fracture)
+
+subset2Labels(fracture, cluster = c(&quot;Bone Marrow&quot;, &quot;Periosteum&quot;), export.all = T, dir.out = &quot;R/All_peri/&quot;)</code></pre>
+<p>2.2</p>
+<pre class="sh"><code># Selecting directories specific coordinates ----
+peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Periosteum&quot;)
+cort &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Bone Marrow&quot;)</code></pre>
+<p>2.3</p>
+<pre class="sh"><code># Calculate SpatialTime between clusters of interest ----
+sp &lt;- Spatial2Time(cort, peri)</code></pre>
+<p>2.4</p>
+<pre class="sh"><code># Visualize spots gradient ----
+vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1.1&quot;, return_obj = F)
+vis</code></pre>
+<p>2.5</p>
+<pre class="sh"><code># Pseudotime Calculation ----
+ps &lt;- PseudoTime(vis, assay = &quot;SCT&quot;)</code></pre>
+<p>2.6</p>
+<pre class="sh"><code># Visualze Genes of interest
+des &lt;- GeneVis(ps, genes = c(&quot;HBA1&quot;,&quot;COL1A1&quot;,&quot;SOX9&quot;))
+View(des@meta.data)
+
+ggplot(des@meta.data) +
+  geom_smooth(aes(st, COL1A1, color = &quot;COL1A1&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +
+  geom_smooth(aes(st, SOX9, color = &quot;SOX9&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +
+  scale_color_manual(values = c(&quot;COL1A1&quot; = &quot;#E69F00&quot;, &quot;SOX9&quot; = &quot;#56B4E9&quot;)) +
+  theme_classic()</code></pre>
 </div>
 <div id="fijiimagej-based-approach" class="section level2">
-<h2>1. Fiji/ImageJ based approach</h2>
+<h2>3. Fiji/ImageJ based approach</h2>
 <p>1.1 Fiji is a broadly used open source scientific image processing
 tool. Fiji allows drawing the reference lines of interest and exporting
 each delineated pixel as an XY coordinates later used for euclidean
@@ -1587,47 +1705,6 @@ p &lt;- plot_pseudotime_heatmap(ps, num_clusters = 3, cores = 12, show_rownames 
 <pre class="sh"><code>des &lt;- GeneVis(ps, genes = c(&quot;HBA1&quot;,&quot;COL1A1&quot;,&quot;SOX9&quot;))
 View(des@meta.data)
 
-
-ggplot(des@meta.data) +
-  geom_smooth(aes(st, COL1A1, color = &quot;COL1A1&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +
-  geom_smooth(aes(st, SOX9, color = &quot;SOX9&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +
-  scale_color_manual(values = c(&quot;COL1A1&quot; = &quot;#E69F00&quot;, &quot;SOX9&quot; = &quot;#56B4E9&quot;)) +
-  theme_classic()</code></pre>
-</div>
-<div id="cluster-based-approach" class="section level2">
-<h2>2. Cluster based approach</h2>
-<p>SpatialTime can also be obtained between two distinct cell type
-clusters previously annotated and present in your object
-<code>Idents()</code>. The basic underlying idea is that the outermost
-spots of your reference cluster will be used to calculate the distance
-between the cluster of interest. The steps are pretty straightforward
-and much alike Fiji based strategy, with the benefit of not using third
-party tools to obtained comprehensive and significant biological
-information, although the freedom to delimit whatever area in the
-histology section become cell type restricted.</p>
-<p>2.1</p>
-<pre class="sh"><code>fracture &lt;- readRDS(&quot;R/fracture_original_annotation.rds&quot;)
-Idents(fracture)
-
-subset2Labels(fracture, cluster = c(&quot;Bone Marrow&quot;, &quot;Periosteum&quot;), export.all = T, dir.out = &quot;R/All_peri/&quot;)</code></pre>
-<p>2.2</p>
-<pre class="sh"><code># Selecting directories specific coordinates ----
-peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Periosteum&quot;)
-cort &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Bone Marrow&quot;)</code></pre>
-<p>2.3</p>
-<pre class="sh"><code># Calculate SpatialTime between clusters of interest ----
-sp &lt;- Spatial2Time(cort, peri)</code></pre>
-<p>2.4</p>
-<pre class="sh"><code># Visualize spots gradient ----
-vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1.1&quot;, return_obj = F)
-vis</code></pre>
-<p>2.5</p>
-<pre class="sh"><code># Pseudotime Calculation ----
-ps &lt;- PseudoTime(vis, assay = &quot;SCT&quot;)</code></pre>
-<p>2.6</p>
-<pre class="sh"><code># Visualze Genes of interest
-des &lt;- GeneVis(ps, genes = c(&quot;HBA1&quot;,&quot;COL1A1&quot;,&quot;SOX9&quot;))
-View(des@meta.data)
 
 ggplot(des@meta.data) +
   geom_smooth(aes(st, COL1A1, color = &quot;COL1A1&quot;), method = &quot;loess&quot;, span = 1, se = FALSE) +

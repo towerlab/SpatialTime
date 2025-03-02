@@ -11,7 +11,7 @@ output:
 ---
 
 # SpatialTime 
-Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to access gene expression, pathways scores and co-expression gene modules by establishing spatially defined reference points and calculating ST spots distances against the arbitrarily defined reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
+Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histologies while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression in a distance gradient, gene expression and module score pathways  across pseudotime by establishing spatially defined reference points and calculating ST spots distances against those reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
 
 ## Installation
 Package install via CRAN:
@@ -50,28 +50,30 @@ set.seed(12345)
 # Import object
 fracture <- readRDS("R/TrkA_annotation.rds")
 ```
-1.2 Export cluster's XY coordinates of interess. Make sure that cell types labels are in Seurat object ```Idents()```. In case they're not, clusters labels from ```seurat@meta.data``` can be added into ```Idents()```. For instance:
+1.2 Export cluster's XY coordinates of interest. Make sure that cell types labels are in Seurat object ```Idents()```. In case they're not, clusters labels from ```seurat@meta.data``` can be added into ```Idents()```. For instance:
 ```sh
 Idents(fracture) # Check cluster names in Seurat object identity
-Idents(fracture) <- fracture$cluster_labels # Add cluster label from metadata into identity
+Idents(fracture) <- fracture$cluster_labels # Add cluster label from metadata into objects identity
 
-# Export cell type coordinates to desured directory
+# Export cell type coordinates to an output directory
 subset2Labels(fracture, cluster = c("Blastema", "Nailbed"), dir.out = "R/All_peri/")
 ```
-1.3 Once clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance. Using a build-in Shiny app allows the manual selection of how many spots in a sample slice as reference. To navigate trought the app, use ```shift+mouse``` to move around the sample and ```ctrl+left click``` to select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing use to zoom in or out. When spots selection are done, click ```Export Selected Spots``` and close the Shiny app. 
+1.3 Once the desired clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance calculation. The package's build-in Shiny app allows the manual selection of spots in a particular sample slice as reference. To navigate trough the app, use ```shift+left click``` to move around the sample and ```ctrl+left click``` to (un)select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing users to zoom in or zoom out. After spots selection, click ```Export Selected Spots``` and close the Shiny app. 
 ```sh
 # Selecting reference spots 
 app <- ShinySelection(fracture)
+app
 ```
-By importing an cluster coordinates and reference spots previouly selected, SpatialTime distance gradient can be calculated. For example, using the cluster labeled as ```blastema```, it follows:
+By importing the cluster coordinate and reference spots previously selected, SpatialTime distance gradient can be calculated. For ```CoordMerge``` provide the path for coordinate folder and cluster name in ```pattern = ```. For example, using the cluster labeled as ```blastema```, it follows:
 ```sh
 # Import coordinates of cluster and reference spots 
 peri <- CoordMerge("R/All_peri/", pattern = "Blastema")
 ref <- ShinySpots(fracture, coord_file = "selected_spots.csv")
 # Calculate SpatialTime between cluster and reference ----
 sp <- SpatialShinyTime(peri, ref)
+sp
 ```
-The visualization of gradient distance is a import step since ensures that the desired distance axis between the clusters of interest is correct for the following steps. Additionaly, by subsetting out cells, using ```subset``` function. that were not included in the gradient distance calculation is recommended, since it allows a cleaner gradient visualization and faster processing for later steps  
+The visualization of gradient distance axis is a critical step since ensures that the desired distance axis between the clusters of interest is correct for the following steps. Moreover, by subsetting out cells, using ```subset``` function that were not included in the gradient distance calculation is recommended, since it allows a cleaner gradient visualization and faster processing in later steps.  
 ```sh
 # Visualize spots gradient 
 vis <- SpatialVis(fracture, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
@@ -80,18 +82,21 @@ vis
 # Subset out spots which spatialtime (st) value were not calculated
 vis <- subset(vis, subset = st != 0)
 ```
-
+In order to investigate changes in gene expression across the axis distance gradient, we'll calculate and replace pseudotime values for each individual spots with their corresponding spatialtime (st) value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
 ```sh
 # Calculate pseudotime and visualize genes differentialy expressed across distance gradient
 ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = F)
 p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
 p
 ```
+Also, we can analyzing gene expression simply across pseudotime. This time, ```return_obj``` is set to ```TRUE```, which returns Seurat object with pseudotime added into metadata. Then, genes of interest can be visualized across pseudotime. 
 ```sh
-# Visualize genes across pseudotime only 
+# Calculate pseudotime
 ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = T)
+# Visualize genes across pseudotime 
 GeneVis(file = ps, column = c("PDGFRA", "HBA1", "SOX9"), signal = "gene")
 ```
+Module score pathways can also be visualized across pseudotime. First, genes related to specific pathways are set and added into Seurat object metadata. Thus, pathways are retrived from metadata and plotted across pseudotime.  
 ```sh
 # Gene list pathways 
 osteo <- c("Alpl","Bglap","Bglap2","Col1a1","Col1a2","Dmp1","Ibsp","Mef2c","Postn",
@@ -104,10 +109,6 @@ gene_modules <- list(Module1 = osteo, Module2 = angio)
 module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "cluster") 
 GeneVis(file = ps, column = c("cluster1", "cluster2"), signal = "pathway")
 ```
-
-
-
-
 
 
 ## 2. Cluster selection based approach

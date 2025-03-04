@@ -1567,8 +1567,8 @@ app</code></pre>
 <p>By importing the cluster coordinate and reference spots previously
 selected, SpatialTime distance gradient can be calculated. For
 <code>CoordMerge</code> provide the path for coordinate folder and
-cluster name in <code>pattern =</code>. For example, using the cluster
-labeled as <code>blastema</code>, it follows:</p>
+cluster name in <code>pattern = cell_type_name</code>. For example,
+using the cluster labeled as <code>Blastema</code>, it follows:</p>
 <pre class="sh"><code># Import coordinates of cluster and reference spots 
 peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Blastema&quot;)
 ref &lt;- ShinySpots(fracture, coord_file = &quot;selected_spots.csv&quot;)
@@ -1625,35 +1625,42 @@ GeneVis(file = ps, column = c(&quot;cluster1&quot;, &quot;cluster2&quot;), signa
 </div>
 <div id="cluster-selection-based-approach" class="section level2">
 <h2>2. Cluster selection based approach</h2>
-<p>SpatialTime can also be obtained between two distinct cell type
-clusters previously annotated and present in your object
-<code>Idents()</code>. The basic underlying idea is that the outermost
-spots of your reference cluster will be used to calculate the distance
-between the cluster of interest. The steps are pretty straightforward
-and much alike Fiji based strategy, with the benefit of not using third
-party tools to obtained comprehensive and significant biological
-information, although the freedom to delimit whatever area in the
-histology section become cell type restricted.</p>
-<p>2.1</p>
+<p>The basic underlying concept of SpatialTime using the cluster
+selection based approach is the same as previously described. However,
+there’s no need to manually select spatial spots as reference, since all
+spots within a cluster of interest we’ll be used as reference, therefore
+potentially allowing a even faster and straighfoward analysis.</p>
+<p>2.1 Import Seurat’s object and ensure that cell clusters are
+annotated and present in your object <code>Idents()</code>.</p>
 <pre class="sh"><code>fracture &lt;- readRDS(&quot;R/fracture_original_annotation.rds&quot;)
-Idents(fracture)
 
-subset2Labels(fracture, cluster = c(&quot;Bone Marrow&quot;, &quot;Periosteum&quot;), export.all = T, dir.out = &quot;R/All_peri/&quot;)</code></pre>
-<p>2.2</p>
+Idents(fracture) # Check cluster names in Seurat object identity
+Idents(fracture) &lt;- fracture$cluster_labels # Add cluster label from metadata into objects identity
+
+# Export cell type coordinates to an output directory
+subset2Labels(fracture, cluster = c(&quot;Blastema&quot;, &quot;Nailbed&quot;), dir.out = &quot;R/All_peri/&quot;)</code></pre>
+<p>2.2 Import clusters coordinates and run <code>Spatia2lTime</code> for
+gradient distance calculation:</p>
 <pre class="sh"><code># Selecting directories specific coordinates ----
-peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Periosteum&quot;)
-cort &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Bone Marrow&quot;)</code></pre>
-<p>2.3</p>
-<pre class="sh"><code># Calculate SpatialTime between clusters of interest ----
-sp &lt;- Spatial2Time(cort, peri)</code></pre>
-<p>2.4</p>
-<pre class="sh"><code># Visualize spots gradient ----
+peri &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Blastema&quot;)
+cort &lt;- CoordMerge(&quot;R/All_peri/&quot;, pattern = &quot;Nailbed&quot;)
+
+# Calculate SpatialTime between clusters of interest ----
+sp &lt;- Spatial2Time(cort, peri)
+sp</code></pre>
+<p>2.3 Visualize gradient distance calculated in early step. If gradient
+distance axis follows the desired direction between clusters assign
+<code>return_obj</code> to <code>TRUE</code> allowing spatialtime values
+addition into data’s metadata.</p>
+<pre class="sh"><code># Distance gradient visualization ----
 vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1.1&quot;, return_obj = F)
-vis</code></pre>
-<p>2.5</p>
+vis
+# Adding st into metadata
+vis &lt;- SpatialVis(fracture, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1.1&quot;, return_obj = T)</code></pre>
+<p>2.4</p>
 <pre class="sh"><code># Pseudotime Calculation ----
 ps &lt;- PseudoTime(vis, assay = &quot;SCT&quot;)</code></pre>
-<p>2.6</p>
+<p>2.5</p>
 <pre class="sh"><code># Visualze Genes of interest
 des &lt;- GeneVis(ps, genes = c(&quot;HBA1&quot;,&quot;COL1A1&quot;,&quot;SOX9&quot;))
 View(des@meta.data)

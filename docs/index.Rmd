@@ -64,7 +64,7 @@ subset2Labels(fracture, cluster = c("Blastema", "Nailbed"), dir.out = "R/All_per
 app <- ShinySelection(fracture)
 app
 ```
-By importing the cluster coordinate and reference spots previously selected, SpatialTime distance gradient can be calculated. For ```CoordMerge``` provide the path for coordinate folder and cluster name in ```pattern = ```. For example, using the cluster labeled as ```blastema```, it follows:
+By importing the cluster coordinate and reference spots previously selected, SpatialTime distance gradient can be calculated. For ```CoordMerge``` provide the path for coordinate folder and cluster name in ```pattern = cell_type_name```. For example, using the cluster labeled as ```Blastema```, it follows:
 ```sh
 # Import coordinates of cluster and reference spots 
 peri <- CoordMerge("R/All_peri/", pattern = "Blastema")
@@ -110,45 +110,47 @@ module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "cl
 GeneVis(file = ps, column = c("cluster1", "cluster2"), signal = "pathway")
 ```
 
-
 ## 2. Cluster selection based approach
-SpatialTime can also be obtained between two distinct cell type clusters previously annotated and present in your object ```Idents()```. The basic underlying idea is that the outermost spots of your reference cluster will be used to calculate the distance between the cluster of interest. The steps are pretty straightforward and much alike Fiji based strategy, with the benefit of not using third party tools to obtained comprehensive and significant biological information, although the freedom to delimit whatever area in the histology section become cell type restricted.   
+The basic underlying concept of SpatialTime using the cluster selection based approach is the same as previously described. However, there's no need to manually select spatial spots as reference, since all spots within a cluster of interest we'll be used as reference, therefore potentially allowing a even faster and straighfoward analysis.
 
-2.1 
+2.1 Import Seurat's object and ensure that cell clusters are annotated and present in your object ```Idents()```. 
 ```sh
 fracture <- readRDS("R/fracture_original_annotation.rds")
-Idents(fracture)
 
-subset2Labels(fracture, cluster = c("Bone Marrow", "Periosteum"), export.all = T, dir.out = "R/All_peri/")
+Idents(fracture) # Check cluster names in Seurat object identity
+Idents(fracture) <- fracture$cluster_labels # Add cluster label from metadata into objects identity
+
+# Export cell type coordinates to an output directory
+subset2Labels(fracture, cluster = c("Blastema", "Nailbed"), dir.out = "R/All_peri/")
 ```
 
-2.2
+2.2 Import clusters coordinates and run ```Spatia2lTime``` for gradient distance calculation:
 ```sh
 # Selecting directories specific coordinates ----
-peri <- CoordMerge("R/All_peri/", pattern = "Periosteum")
-cort <- CoordMerge("R/All_peri/", pattern = "Bone Marrow")
-```
+peri <- CoordMerge("R/All_peri/", pattern = "Blastema")
+cort <- CoordMerge("R/All_peri/", pattern = "Nailbed")
 
-2.3
-```sh
 # Calculate SpatialTime between clusters of interest ----
 sp <- Spatial2Time(cort, peri)
+sp
+```
+
+2.3 Visualize gradient distance calculated in early step. If gradient distance axis follows the desired direction between clusters assign ```return_obj``` to ```TRUE``` allowing spatialtime values addition into data's metadata. 
+```sh
+# Distance gradient visualization ----
+vis <- SpatialVis(fracture, sp, spatial.by = "rel", slice = "slice1.1", return_obj = F)
+vis
+# Adding st into metadata
+vis <- SpatialVis(fracture, sp, spatial.by = "rel", slice = "slice1.1", return_obj = T)
 ```
 
 2.4
-```sh
-# Visualize spots gradient ----
-vis <- SpatialVis(fracture, sp, spatial.by = "rel", slice = "slice1.1", return_obj = F)
-vis
-```
-
-2.5
 ```sh
 # Pseudotime Calculation ----
 ps <- PseudoTime(vis, assay = "SCT")
 ```
 
-2.6
+2.5
 ```sh
 # Visualze Genes of interest
 des <- GeneVis(ps, genes = c("HBA1","COL1A1","SOX9"))

@@ -124,7 +124,7 @@ Idents(fracture) <- fracture$cluster_labels # Add cluster label from metadata in
 subset2Labels(fracture, cluster = c("Blastema", "Nailbed"), dir.out = "R/All_peri/")
 ```
 
-2.2 Import clusters coordinates and run ```Spatia2lTime``` for gradient distance calculation:
+2.2 Import clusters coordinates and run ```Spatial2Time``` for gradient distance calculation:
 ```sh
 # Selecting directories specific coordinates ----
 peri <- CoordMerge("R/All_peri/", pattern = "Blastema")
@@ -135,7 +135,7 @@ sp <- Spatial2Time(cort, peri)
 sp
 ```
 
-2.3 Visualize gradient distance calculated in early step. If gradient distance axis follows the desired direction between clusters assign ```return_obj``` to ```TRUE``` allowing spatialtime values addition into data's metadata. 
+2.3 Visualize gradient distance calculated in the previous step. If gradient distance axis follows the desired direction between clusters assign ```return_obj``` to ```TRUE``` allowing spatialtime values addition into object's metadata. For instance:
 ```sh
 # Distance gradient visualization ----
 vis <- SpatialVis(fracture, sp, spatial.by = "rel", slice = "slice1.1", return_obj = F)
@@ -144,29 +144,38 @@ vis
 vis <- SpatialVis(fracture, sp, spatial.by = "rel", slice = "slice1.1", return_obj = T)
 ```
 
-2.4
+2.4 By calculating pseudotime and assigning ```return_obj``` to ```FALSE``` genes differentialy expressed across spatial distance can be visualize using a heatmap:
 ```sh
 # Pseudotime Calculation ----
-ps <- PseudoTime(vis, assay = "SCT")
+ps <- PseudoTime(vis, assay = "SCT", cores = 8, return_obj = F)
+p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
 ```
 
-2.5
+2.5 Once more, in order to assess individual genes expression across spatialtime distance gradient we perform: 
 ```sh
-# Visualze Genes of interest
-des <- GeneVis(ps, genes = c("HBA1","COL1A1","SOX9"))
-View(des@meta.data)
-
-ggplot(des@meta.data) +
-  geom_smooth(aes(st, COL1A1, color = "COL1A1"), method = "loess", span = 1, se = FALSE) +
-  geom_smooth(aes(st, SOX9, color = "SOX9"), method = "loess", span = 1, se = FALSE) +
-  scale_color_manual(values = c("COL1A1" = "#E69F00", "SOX9" = "#56B4E9")) +
-  theme_classic()
+# Calculate pseudotime
+ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = T)
+# Visualize genes across pseudotime 
+GeneVis(file = ps, column = c("PDGFRA", "HBA1", "SOX9"), signal = "gene")
 ```
+2.6 Visualization of pathways using module score can done as follows:
+```sh
+osteo <- c("Alpl","Bglap","Bglap2","Col1a1","Col1a2","Dmp1","Ibsp","Mef2c","Postn",
+           "Runx2","Sp7","Sparc","Phex","Satb2","Pth1r","Ostn","Car3")
+
+angio <- c("Cdh5","Ddit3","S1pr1","Ankrd17","Lyl1","Mmp2","Reck","Acvrl1")
+
+# Add gene modules in object with pseudotime calculated
+gene_modules <- list(Module1 = osteo, Module2 = angio)
+module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "cluster") 
+GeneVis(file = ps, column = c("cluster1", "cluster2"), signal = "pathway")
+```
+
 
 ## 3. Fiji/ImageJ based approach
-1.1 Fiji is a broadly used open source scientific image processing tool. Fiji allows drawing the reference lines of interest and exporting each delineated pixel as an XY coordinates later used for euclidean distance calculation. Fiji can be downloaded [here](https://imagej.net/software/fiji/) and a brief Fiji tutorial on how draw and export references lines can be found [here](to put).
+3.1 Fiji is a broadly used open source scientific image processing tool. Fiji allows drawing the reference lines of interest and exporting each delineated pixel as an XY coordinates later used for euclidean distance calculation. Fiji can be downloaded [here](https://imagej.net/software/fiji/) and a brief Fiji tutorial on how draw and export references lines can be found [here](to put).
 
-1.2 First, import your Seurat ST object using ```readRDS()``` function. Then, we proceed using ```subsetLabels()``` which allows us to export ST clusters coordinates as excel sheets.
+3.2 First, import your Seurat ST object using ```readRDS()``` function. Then, we proceed using ```subsetLabels()``` which allows us to export ST clusters coordinates as excel sheets.
 ```sh
 options(future.globals.maxSize=500000*1024^2)
 
@@ -186,7 +195,7 @@ fracture <- readRDS("R/fracture_original_annotation.rds")
 subsetLabels("R/fracture_original_annotation.rds", cluster = c("MarrowFibrin", "Periosteum", "Cortical"), slice.n = "slice1", export.all = T, dir.out = "R/Excel/")
 ```
 
-1.3 Import Fiji XY coordinates previously prepared. Furthermore, we need to match the reference line colors to their respective tissue/region names. Be aware that the tissue names must exist in your Seurat object identities. Then, by running ```SpatialCalc()``` each XY coordinate can be transformed accordingly to the slice factor.  
+3.3 Import Fiji XY coordinates previously prepared. Furthermore, we need to match the reference line colors to their respective tissue/region names. Be aware that the tissue names must exist in your Seurat object identities. Then, by running ```SpatialCalc()``` each XY coordinate can be transformed accordingly to the slice factor.  
 ```sh
 fiji <- read.csv("R/fiji_output.csv")
 colors <- c("Red", "Green", "Blue") 
@@ -195,7 +204,7 @@ tissue <- c("MarrowFibrin", "Periosteum", "Cortical")
 data <- SpatialCalc("R/fiji_output.csv", factor = "R/scalefactors_json.json", colors = colors, tissue = tissue) 
 ```
 
-1.4 At this step, SpatialTime distance are ready to be calculated. First, import your cluster type coordinates as reference and calculate the spots distances against other cluster. 
+3.4 At this step, SpatialTime distance are ready to be calculated. First, import your cluster type coordinates as reference and calculate the spots distances against other cluster. 
 ```sh
 # Calculate minimum spots distances from reference line of interest
 file <- read.csv("R/Excel/Periosteum_coordinates.csv")
@@ -204,7 +213,7 @@ sp <- SpatialTime(file, "MarrowFibrin")
 sp
 ```
 
-1.5 
+3.5 
 SpatialTime distance gradient can be assessed using:
 ```sh
 # Visualization spatialtime gradient ----
@@ -213,7 +222,7 @@ vis
 View(vis@meta.data)
 ```
 
-1.6 
+3.6 
 ```Pseudotime``` allows calculating and adding pseudotime values in the object metadata. By replacing the calculated spatialtime values into their respective pseudotime, it becomes possible to infer which genes are differential expressed as a gradient of distance. Briefly, we can assess which genes are up or downregulated as you move away from the reference line.  
 ```sh
 # Calculate pseudotime ----
@@ -223,7 +232,7 @@ View(ps@meta.data)
 p <- plot_pseudotime_heatmap(ps, num_clusters = 3, cores = 12, show_rownames = T, return_heatmap = T)
 ```
 
-1.7 Basic Visualization 
+3.7 Basic Visualization 
 ```sh
 des <- GeneVis(ps, genes = c("HBA1","COL1A1","SOX9"))
 View(des@meta.data)

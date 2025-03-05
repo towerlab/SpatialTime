@@ -30,7 +30,7 @@ PseudoTime(
 
 \item{cores}{number of CPU cores to use}
 
-\item{heatmap_plot}{plot monocle heatmap}
+\item{return_obj}{plot monocle heatmap}
 }
 \description{
 PseudoTime

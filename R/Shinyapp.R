@@ -11,20 +11,21 @@
 #' @import umap
 #' @export
 
-ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
+ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.csv") {
 
   spatial_coords <- GetTissueCoordinates(file)
   colnames(spatial_coords) <- c("x", "y")
 
   spatial_coords$barcode <- rownames(spatial_coords)
 
-  metadata <- seurat_obj@meta.data
+  metadata <- file@meta.data
   metadata$barcode <- rownames(metadata)
 
   plot_data <- merge(spatial_coords, metadata, by = "barcode")
 
-  unique_colors <- rainbow(length(unique(plot_data$TissueID)))
-  color_map <- setNames(unique_colors, unique(plot_data$TissueID))
+  # Corrected color mapping
+  unique_colors <- rainbow(length(unique(plot_data[[id]])))
+  color_map <- setNames(unique_colors, as.character(unique(plot_data[[id]])))
 
   server <- function(input, output, session) {
     selected_indices <- reactiveVal(integer(0))
@@ -39,7 +40,7 @@ ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
                    mode = 'markers',
                    marker = list(
                      size = 8,
-                     color = ~color_map[as.character(TissueID)],
+                     color = color_map[as.character(plot_data[[id]])],  # Direct color mapping
                      line = list(
                        color = 'black',
                        width = ifelse(seq_len(nrow(plot_data)) %in% current_indices, 2, 0)
@@ -74,7 +75,6 @@ ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
 
       p
     })
-
 
     observeEvent(event_data("plotly_relayout", source = "spatial_plot"), {
       relayout_data <- event_data("plotly_relayout", source = "spatial_plot")
@@ -111,8 +111,7 @@ ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
     selected_spots_data <- reactive({
       indices <- selected_indices()
       if (length(indices) > 0) {
-
-        plot_data[indices, c("barcode", "x", "y")]
+        plot_data[indices, c("barcode", "x", "y", id)]
       } else {
         data.frame()
       }
@@ -124,13 +123,14 @@ ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
         result <- "Selected spots:\n"
 
         for (i in 1:nrow(spots_data)) {
-
           x_val <- as.numeric(spots_data[i, "x"])
           y_val <- as.numeric(spots_data[i, "y"])
           barcode <- as.character(spots_data[i, "barcode"])
+          cluster <- as.character(spots_data[i, id])
 
           result <- paste0(result,
                            "Barcode: ", barcode,
+                           ", Cluster: ", cluster,
                            ", Coordinates: (",
                            format(x_val, nsmall = 2), ", ",
                            format(y_val, nsmall = 2), ")\n")
@@ -152,12 +152,11 @@ ShinySelection <- function(file = NULL, file.name = "selected_spots.csv") {
     observeEvent(input$export, {
       spots_data <- selected_spots_data()
       if (nrow(spots_data) > 0) {
-
         spots_data$x <- as.numeric(spots_data$x)
         spots_data$y <- as.numeric(spots_data$y)
 
         write.csv(spots_data, file.name, row.names = FALSE)
-        print(paste("Exported", nrow(spots_data), "spots with barcodes to selected_spots.csv"))
+        print(paste("Exported", nrow(spots_data), "spots with barcodes to", file.name))
       } else {
         print("No spots selected to export")
       }
@@ -206,6 +205,8 @@ ShinySpots <- function(seurat_obj = NULL, coord_file = NULL, slice.n = "slice1")
 
   file <- read.csv(coord_file)
   labels <- file$barcode
+
+  seurat_obj$barcode <- row.names(seurat_obj@meta.data)
 
   sub <- subset(seurat_obj, subset = barcode %in% labels)
   ref <- sub@images[[slice.n]]@coordinates

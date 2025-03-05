@@ -47,11 +47,12 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 
 }
 
-
 #' GeneVis
 #' @param file Seurat object with pseudotime values in metadata
 #' @param column Genes to be plotted
 #' @param signal Selecting wheter genes or module pathways to visualize
+#' @param span Curve smoothness
+#' @param se Standard error
 #' @import Seurat
 #' @import tidyverse
 #' @export
@@ -59,7 +60,7 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @details
 #' Visualization of genes of interest using reference line as starting point
 #'
-GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway")) {
+GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), span = 1, se = F) {
 
   if (is.null(file) || class(file) != "Seurat") {
     stop("Error. File not found or format not supported.")
@@ -90,7 +91,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway")) {
 
   for (var in unique(df_long$variable)) {
     p <- p + geom_smooth(data = subset(df_long, variable == var), aes(x = st, y = value),
-                         method = "loess", span = 1.5, se = FALSE) + theme_classic()
+                         method = "loess", span = span, se = se) + theme_classic()
   }
 
   return(p)

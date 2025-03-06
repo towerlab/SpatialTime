@@ -4,7 +4,13 @@
 \alias{GeneVis}
 \title{GeneVis}
 \usage{
-GeneVis(file = NULL, column = NULL, signal = c("gene", "pathway"))
+GeneVis(
+  file = NULL,
+  column = NULL,
+  signal = c("gene", "pathway"),
+  span = 1,
+  se = F
+)
 }
 \arguments{
 \item{file}{Seurat object with pseudotime values in metadata}
@@ -12,6 +18,10 @@ GeneVis(file = NULL, column = NULL, signal = c("gene", "pathway"))
 \item{column}{Genes to be plotted}
 
 \item{signal}{Selecting wheter genes or module pathways to visualize}
+
+\item{span}{Curve smoothness}
+
+\item{se}{Standard error}
 }
 \description{
 GeneVis

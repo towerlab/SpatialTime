@@ -4,7 +4,12 @@
 \alias{subset2Labels}
 \title{subset2Labels}
 \usage{
-subset2Labels(data = NULL, cluster = NULL, export.all = TRUE, dir.out = "")
+subset2Labels(
+  data = NULL,
+  cluster = NULL,
+  export.all = F,
+  dir.out = "coord_out"
+)
 }
 \arguments{
 \item{data}{Seurat object as Input}

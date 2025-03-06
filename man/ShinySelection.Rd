@@ -4,7 +4,7 @@
 \alias{ShinySelection}
 \title{ShinySelection}
 \usage{
-ShinySelection(file = NULL, file.name = "selected_spots.csv")
+ShinySelection(file = NULL, id = NULL, file.name = "selected_spots.csv")
 }
 \arguments{
 \item{file}{Seurat object}

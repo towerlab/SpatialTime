@@ -11,15 +11,22 @@
 #' @import tidyverse
 #' @export
 
-subset2Labels <- function(data = NULL, cluster = NULL, export.all = TRUE, dir.out = "") {
+subset2Labels <- function(data = NULL, cluster = NULL, export.all = F, dir.out = "coord_out") {
 
   if (is.null(data)) {
     stop("Data is not provided.")
   }
 
-  if (export.all) {
+  if (!dir.exists(dir.out)) {
+    dir.create(dir.out, recursive = TRUE)
+  }
 
-    # Check if it's Seurat data
+  if (!endsWith(dir.out, "/")) {
+    dir.out <- paste0(dir.out, "/")
+  }
+
+  if (!export.all) {
+
     if (is.null(cluster)) {
       stop("Cluster IDs were not specified.")
     }
@@ -36,9 +43,9 @@ subset2Labels <- function(data = NULL, cluster = NULL, export.all = TRUE, dir.ou
       }
 
       for (z in seq_along(clstrs)) {
-        for (y in seq_along(names(clstrs[[z]]@images))) {
 
-          file_name <- paste0(dir.out, cluster[z], "_", names(clstrs[[z]]@images)[y], "_coordinates.csv")
+        for (y in seq_along(names(clstrs[[z]]@images))) {
+          file_name <- file.path(dir.out, paste0(cluster[z], "_", names(clstrs[[z]]@images)[y], "_coordinates.csv"))
           write.csv(clstrs[[z]]@images[[y]]@coordinates, file_name)
         }
       }
@@ -54,7 +61,7 @@ subset2Labels <- function(data = NULL, cluster = NULL, export.all = TRUE, dir.ou
 
     for (y in seq_along(names(data@images))) {
 
-      file_name <- paste0(dir.out, names(data@images)[y], "_coordinates.csv")
+      file_name <- file.path(dir.out, "ALL_coordinates.csv")
       write.csv(data@images[[y]]@coordinates, file_name)
     }
 

@@ -141,3 +141,27 @@ Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 
   return(hsmm_sub)
 
 }
+
+#' GeneGet
+#' @param var Pheatmap file from Pseudo2Time
+#' @param n_clusters Number of clusters from heatmap
+#' @details
+#' Get genes present in each clusters identified from heatmap.
+#'
+#' @import Seurat
+#' @import monocle
+#' @import tidyverse
+#' @export
+
+GeneGet <- function(var = NULL, n_clusters = 2) {
+
+  if (!is(var, "pheatmap")) {
+    stop("File is not a pheatmap object.")
+  }
+
+  htmap <- as.data.frame(cutree(var$tree_row, k=n_clusters))
+  colnames(htmap) <- "Cluster"
+  htmap$Gene <- rownames(htmap)
+
+  return(htmap)
+}

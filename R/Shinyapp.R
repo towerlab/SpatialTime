@@ -190,6 +190,7 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
 #' @param seurat_obj Seurat object
 #' @param coord_file Spots selection coordinates
 #' @param slice.n Slice number
+#' @param id Seurat object metadata feature name containing clusters identities
 #' @details
 #' This function allows coordinates extraction from specific spots barcodes previously selected in ShinySelection function
 #'

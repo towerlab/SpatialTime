@@ -21,12 +21,15 @@ SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
   }
 
   if (is.character(factor)) {
+
     if (file.exists(factor)) {
       json_data <- fromJSON(factor)
       factor <- as.numeric(json_data$tissue_hires_scalef)
     }
+
   } else if (is.numeric(factor)) {
     factor <- as.numeric(factor)
+
   } else {
     stop("Factor must be either a numeric value or a path to a JSON file.")
   }
@@ -34,6 +37,8 @@ SpatialCalc <- function(file = "", factor = 1, colors = NULL, tissue = NULL) {
   if (!(length(colors) == length(tissue))) {
     stop("Number of reference lines and names should be equal!")
   }
+
+  colors <- str_to_title(colors)
 
   for (i in 1:length(colors)) {
     x <- x %>%

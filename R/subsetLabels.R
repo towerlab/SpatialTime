@@ -12,17 +12,15 @@
 #' @import tidyverse
 #' @export
 
-subsetLabels <- function(file = "", cluster = NULL, export.all = F, slice.n = "slice1", dir.out = "") {
+subsetLabels <- function(file = NULL, cluster = NULL, export.all = F, slice.n = "slice1", dir.out = "coord_out") {
 
-  if (!file.exists(file)) {
-    stop("File does not exist.")
+  if (!is(file, "Seurat")) {
+    stop("File is not a Seurat object.")
   }
 
   if (dir.out != "" && !dir.exists(dir.out)) {
     dir.create(dir.out, recursive = TRUE)
   }
-
-  data <- readRDS(file)
 
   if (!export.all) {
 
@@ -34,7 +32,7 @@ subsetLabels <- function(file = "", cluster = NULL, export.all = F, slice.n = "s
       stop("Number of clusters should be less than or equal to 3.")
     }
 
-    if (!all(cluster %in% Idents(data))) {
+    if (!all(cluster %in% Idents(file))) {
       stop("One or more specified clusters do not exist in the data.")
     }
 
@@ -42,15 +40,15 @@ subsetLabels <- function(file = "", cluster = NULL, export.all = F, slice.n = "s
 
     for (i in seq_along(cluster)) {
 
-      clstrs[[i]] <- subset(data, idents = cluster[i])
+      clstrs[[i]] <- subset(file, idents = cluster[i])
 
-      write.csv(clstrs[[i]]@images[[slice.n]]@coordinates, file.path(dir.out, paste0(cluster[i], "_coordinates.csv")))
+      write.csv(clstrs[[i]]@images[[slice.n]]@coordinates, file.path(dir.out, paste0(cluster[i], "_", names(clstrs[[i]]@images)[i], "_coordinates.csv")))
     }
 
     return(clstrs)
 
   } else {
-    write.csv(data@images[[slice.n]]@coordinates,
+    write.csv(file@images[[slice.n]]@coordinates,
               file.path(dir.out, "all_coordinates.csv"))
   }
 }

@@ -5,11 +5,11 @@
 \title{subsetLabels}
 \usage{
 subsetLabels(
-  file = "",
+  file = NULL,
   cluster = NULL,
   export.all = F,
   slice.n = "slice1",
-  dir.out = ""
+  dir.out = "coord_out"
 )
 }
 \arguments{

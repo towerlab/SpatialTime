@@ -68,3 +68,75 @@ subset2Labels <- function(data = NULL, cluster = NULL, export.all = F, dir.out =
     return(data)
   }
 }
+
+#' subset2LabelsHD
+#' @param data Seurat object as Input
+#' @param cluster Cluster names in Idents
+#' @param export.all Export coordinates files
+#' @param dir.out directory output
+#'
+#' @details
+#' Export clusters coordinates and all their resptive slices
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @export
+
+subset2LabelsHD <- function(data = NULL, cluster = NULL, export.all = FALSE, dir.out = "coord_out") {
+
+  if (is.null(data)) {
+    stop("Data is not provided.")
+  }
+
+  if (!dir.exists(dir.out)) {
+    dir.create(dir.out, recursive = TRUE)
+  }
+
+  if (!endsWith(dir.out, "/")) {
+    dir.out <- paste0(dir.out, "/")
+  }
+
+  if (!export.all) {
+
+    if (is.null(cluster)) {
+      stop("Cluster IDs were not specified.")
+    }
+
+    if (length(cluster) > 3) {
+      stop("Number of clusters should be less than or equal to 3 at a time.")
+    }
+
+    if (all(cluster %in% Idents(data))) {
+      clstrs <- list()
+
+      for (i in seq_along(cluster)) {
+        clstrs[[i]] <- subset(data, idents = cluster[i])
+      }
+
+      for (z in seq_along(clstrs)) {
+
+        for (y in seq_along(names(clstrs[[z]]@images))) {
+          file_name <- file.path(dir.out, paste0(cluster[z], "_", names(clstrs[[z]]@images)[y], "_coordinates.csv"))
+          coord <- GetTissueCoordinates(clstrs[[z]], image = names(clstrs[[z]]@images)[y])
+          write.csv(coord, file_name)
+        }
+      }
+
+      return(clstrs)
+
+    } else {
+      stop("One or more specified clusters are not present in the data.")
+    }
+
+  } else {
+
+    for (y in seq_along(names(data@images))) {
+      file_name <- file.path(dir.out, paste0("ALL_", names(data@images)[y], "_coordinates.csv"))
+      coord <- GetTissueCoordinates(data, image = names(data@images)[y])
+      write.csv(coord, file_name)
+    }
+
+    return(data)
+  }
+}
+

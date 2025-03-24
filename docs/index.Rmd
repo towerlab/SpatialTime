@@ -1,7 +1,10 @@
 ---
 title: "SpatialTime Package"
-author: Dimitri Sokolowskei, Alex Trostle, Robert Tower
+author: "Dimitri Sokolowskei, Alex Trostle, Robert Tower"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     fig_caption: yes
     theme: bootstrap
@@ -11,7 +14,7 @@ output:
 ---
 
 # SpatialTime 
-Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histologies while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression in a distance gradient, gene expression and module score pathways  across pseudotime by establishing spatially defined reference points and calculating ST spots distances against those reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
+Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression and module score pathways across a distance gradient by establishing spatially defined reference points and calculating ST spots distances against those reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
 
 ## Installation
 Package install via CRAN:
@@ -27,10 +30,10 @@ devtools::install_github("dimitrisokolowskei/SpatialTime")
 SpatialTime requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
 ## Dataset 
-For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional file required to run the analysis. The Seurat object can be downloaded [here](put_link).
+For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vigenette at zenodo repository [here](put_link).
 
 ## Analysis Approaches
-SpatialTime supports different strategies for delimiting spatial reference lines by: 1) Manually defining references spots using a build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ;   
+SpatialTime supports different strategies for delimiting spatial reference spots by: 1) Manually defining references spots using the package build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ;   
 
 ## 1. Individual Spots Selection
 1.1 First, import processed Seurat object together with libraries required.
@@ -68,7 +71,7 @@ subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, di
 app <- ShinySelection(demo, id = "Tissue")
 app
 ```
-By importing the cluster coordinate and reference spots previously selected, SpatialTime distance gradient can be calculated. For ```CoordMerge``` provide the path for coordinate folder and cluster name in ```pattern = cell_type_name```. For example, using the cluster labeled as ```Woven```, it follows:
+By importing the cluster coordinate and reference spots previously selected, SpatialTime distance gradient can be calculated. For ```CoordMerge``` provide the path for coordinate folder and cluster name in ```pattern = cell_type_name```. Also, import the reference spots coordinates using ```ShinySpots``` function. For example, using the cluster labeled as ```Woven```, it follows:
 ```sh
 # Import coordinates of cluster and reference spots 
 frac <- CoordMerge("coord_out/", pattern = "Woven")
@@ -84,6 +87,7 @@ vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F
 vis
 ```
 ```sh
+# Calculate gradient distance values and add into metadata
 vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
 View(vis@meta.data)
 
@@ -92,7 +96,7 @@ vis <- subset(vis, subset = st != 0)
 ```
 ![](../images/figs1/fracture_gradient.png)
 
-In order to investigate changes in gene expression across the axis distance gradient, we'll calculate and replace pseudotime values for each individual spots with their corresponding spatialtime (st) value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
+In order to investigate changes in gene expression across the axis distance gradient, we need to calculate and replace pseudotime values for each individual spots with their corresponding spatialtime (st) value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
 ```sh
 # Calculate pseudotime and visualize genes differentialy expressed across distance gradient
 ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = F)
@@ -115,7 +119,7 @@ GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene")
 ```
 ![](../images/figs1/gene.png)
 
-Module score pathways can also be visualized across pseudotime. First, genes related to specific pathways are set and added into Seurat object metadata. Thus, pathways are retrived from metadata and plotted across pseudotime.  
+Module score pathways can also be visualized across pseudotime. First, genes related to specific pathways are set and added into Seurat object metadata. Thus, pathways are retrieve from metadata and plotted across pseudotime.  
 ```sh
 # Gene list pathways 
 # Gene list pathways
@@ -246,7 +250,7 @@ View(demo@meta.data)
 subsetLabels("fracture_demo.rds", cluster = c("Cartilage","Woven"), slice.n = "slice1", dir.out = "coord_out")
 ```
 
-3.3 Import Fiji XY coordinates previously prepared. Furthermore, we need to match the reference line colors to their respective tissue/region names. Be aware that the tissue names must exist in your Seurat object identities. Then, by running ```SpatialCalc()``` each XY coordinate can be transformed accordingly to the slice factor.  
+3.3 Import Fiji XY coordinates previously prepared. Furthermore, we need to match the reference line colors to their respective tissue/region names. Be aware that the tissue names must exist in your Seurat object identities. Notice that each slice image have its own ```factor``` value that can be found in the .json file in each 10x output folder. Then, by running ```SpatialCalc()``` each XY coordinate can be transformed accordingly to the slice factor.  
 ```sh
 fiji <- read.csv("Fiji_C1.csv")
 colors <- c("Red", "Blue")

@@ -2,15 +2,15 @@
 title: "SpatialTime Package"
 author: "Dimitri Sokolowskei, Alex Trostle, Robert Tower"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
   html_document:
     fig_caption: yes
     theme: bootstrap
     toc: yes
     toc_depth: 3
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
 ---
 
 # SpatialTime 

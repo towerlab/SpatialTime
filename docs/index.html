@@ -1503,6 +1503,17 @@ expression profiling based on proximity of any reference line.</p>
 <pre class="sh"><code>#(install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;dimitrisokolowskei/SpatialTime&quot;)</code></pre>
 </div>
+<div id="dependencies-requirements" class="section level2">
+<h2>Dependencies Requirements</h2>
+<p>The <code>igraph</code> package version &lt; <code>2.1.0</code> are
+required for <code>SpatialTime</code> package. Uninstall
+<code>igraph</code> if it was previously installed and update versions.
+For instance:</p>
+<pre class="sh"><code>library(remotes)
+
+remove.packages(&quot;igraph&quot;)
+install_version(&quot;igraph&quot;, version = &quot;2.0.3&quot;)</code></pre>
+</div>
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
 <p>SpatialTime requires a spatial dataset already processed and

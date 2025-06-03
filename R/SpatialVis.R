@@ -5,6 +5,9 @@
 #' @param slice Select tissue slice
 #' @param remove.na subset only tissue of spatialtime
 #' @param return_obj Return object
+#' @param pt_size change spatial spots size
+#' @param image_opacity H&E background opacity
+#'
 #' SpatialVis
 #' @import Seurat
 #' @import tidyverse
@@ -13,7 +16,8 @@
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 
-SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", remove.na = F, return_obj = T) {
+SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel"), slice = "slice1", remove.na = F, return_obj = T,
+                       pt_size = 1, image_opacity = 1) {
 
   if (is.null(file) || is.null(st.calc)) {
     stop("Both 'file' and 'st.calc' must be provided.")
@@ -25,8 +29,10 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
   TissueID <- st.calc[match(myBarcode, st.calc$barcode), ]
 
   if (spatial.by == "abs") {
+
     file$st <- TissueID$st_abs
   } else if (spatial.by == "rel") {
+
     file$st <- TissueID$st_rel
   }
 
@@ -39,10 +45,10 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
   if (remove.na) {
 
     sub <- subset(file, subset = st != 0)
-    SpatialFeaturePlot(sub, features = "st", images = slice)
+    SpatialFeaturePlot(sub, features = "st", images = slice, image.alpha = image_opacity, pt.size.factor = pt_size)
 
   } else {
-    SpatialFeaturePlot(file, features = "st", images = slice)
+    SpatialFeaturePlot(file, features = "st", images = slice, image.alpha = image_opacity, pt.size.factor = pt_size)
   }
 
 }
@@ -53,6 +59,8 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @param signal Selecting wheter genes or module pathways to visualize
 #' @param span Curve smoothness
 #' @param se Standard error
+#' @param line_thickness Curve plot line thickness
+#'
 #' @import Seurat
 #' @import tidyverse
 #' @export
@@ -60,7 +68,7 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @details
 #' Visualization of genes of interest using reference line as starting point
 #'
-GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), span = 1, se = F) {
+GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), span = 1, se = F, line_thickness = 1) {
 
   if (is.null(file) || class(file) != "Seurat") {
     stop("Error. File not found or format not supported.")
@@ -91,7 +99,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
 
   for (var in unique(df_long$variable)) {
     p <- p + geom_smooth(data = subset(df_long, variable == var), aes(x = st, y = value),
-                         method = "loess", span = span, se = se) + theme_classic()
+                         method = "loess", span = span, se = se, linewidth = line_thickness) + theme_classic()
   }
 
   return(p)

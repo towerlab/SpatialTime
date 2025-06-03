@@ -9,7 +9,8 @@ GeneVis(
   column = NULL,
   signal = c("gene", "pathway"),
   span = 1,
-  se = F
+  se = F,
+  line_thickness = 1
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ GeneVis(
 \item{span}{Curve smoothness}
 
 \item{se}{Standard error}
+
+\item{line_thickness}{Curve plot line thickness}
 }
 \description{
 GeneVis

@@ -10,7 +10,9 @@ SpatialVis(
   spatial.by = c("abs", "rel"),
   slice = "slice1",
   remove.na = F,
-  return_obj = T
+  return_obj = T,
+  pt_size = 1,
+  image_opacity = 1
 )
 }
 \arguments{
@@ -24,7 +26,12 @@ SpatialVis(
 
 \item{remove.na}{subset only tissue of spatialtime}
 
-\item{return_obj}{Return object
+\item{return_obj}{Return object}
+
+\item{pt_size}{change spatial spots size}
+
+\item{image_opacity}{H&E background opacity
+
 SpatialVis}
 }
 \description{

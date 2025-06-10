@@ -40,7 +40,7 @@ install_version("igraph", version = "2.0.3")
 SpatialTime requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
 ## Dataset 
-For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vigenette at zenodo repository [here](put_link).
+For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vignette at zenodo repository [here](put_link).
 
 ## Analysis Approaches
 SpatialTime supports different strategies for delimiting spatial reference spots by: 1) Manually defining references spots using the package build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ;   
@@ -62,7 +62,7 @@ set.seed(12345)
 
 # Import object
 demo <- readRDS("fracture_demo.rds")
-View(nf1@meta.data)
+View(demo@meta.data)
 
 # Basic Spatial visualization ----
 SpatialDimPlot(demo, images = "slice1")
@@ -75,7 +75,7 @@ Idents(demo) <- demo$cluster_labels # Add cluster label from metadata if not int
 # Export cell type coordinates to an output directory
 subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, dir.out = "coord_out")
 ```
-1.3 Once the desired clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance calculation. The package's build-in Shiny app allows the manual selection of spots in a particular sample slice as reference. To navigate trough the app, use ```shift+left click``` to move around the sample and ```ctrl+left click``` to (un)select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing users to zoom in or zoom out. After spots selection, click ```Export Selected Spots``` and close the Shiny app. 
+1.3 Once the desired clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance calculation. The package's build-in Shiny app allows the manual selection of spots in a particular sample slice as reference. To navigate trough the app, use ```shift+left click``` to move around the sample and ```ctrl+left click``` to (un)select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing users to zoom in or zoom out. After spots selection, click ```Export Selected Spots``` and close the Shiny app. The ```id``` parameter have to include ```seurat_obj@meta.data``` column name that contains cell types ID's for better visualization in the shiny app. 
 ```sh
 # Selecting reference spots 
 app <- ShinySelection(demo, id = "Tissue")
@@ -90,12 +90,15 @@ ref <- ShinySpots(demo, coord_file = "selected_spots.csv")
 sp <- SpatialShinyTime(frac, ref)
 sp
 ```
-The visualization of gradient distance axis is a critical step since ensures that the desired distance axis between the clusters of interest is correct for the following steps. Moreover, by subsetting out cells, using ```subset``` function that were not included in the gradient distance calculation is recommended, since it allows a cleaner gradient visualization and faster processing in later steps.  
+The visualization of gradient distance axis is a critical step since ensures that the desired distance axis between the clusters of interest is correct for the following steps. Using ```return_obj = F``` distance gradient can be visualized:
 ```sh
 # Visualize spots gradient 
 vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
 vis
 ```
+![](../images/figs1/fracture_gradient.png)
+
+After gradient visualization, subsetting out cells, using ```subset``` function that were not included in the gradient distance calculation is recommended, since it allows a cleaner gradient visualization and faster processing. Spatialtime (st) values must be added into ```meta.data``` and cells with st values equals to zero removed:  
 ```sh
 # Calculate gradient distance values and add into metadata
 vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
@@ -104,9 +107,8 @@ View(vis@meta.data)
 # Subset out spots which spatialtime (st) value were not calculated
 vis <- subset(vis, subset = st != 0)
 ```
-![](../images/figs1/fracture_gradient.png)
 
-In order to investigate changes in gene expression across the axis distance gradient, we need to calculate and replace pseudotime values for each individual spots with their corresponding spatialtime (st) value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
+In order to investigate changes in gene expression across the axis distance gradient, we need to calculate and replace pseudotime values for each individual spots with their corresponding spatialtime value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
 ```sh
 # Calculate pseudotime and visualize genes differentialy expressed across distance gradient
 ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = F)

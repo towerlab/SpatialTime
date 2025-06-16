@@ -64,13 +64,13 @@ set.seed(12345)
 demo <- readRDS("fracture_demo.rds")
 View(demo@meta.data)
 
-# Basic Spatial visualization ----
+# Visualize spatial data colored by specified identity 
 SpatialDimPlot(demo, images = "slice1")
 ```
 1.2 Export cluster's XY coordinates of interest. Make sure that cell types labels are in Seurat object ```Idents()```. In case they're not, clusters labels from ```seurat@meta.data``` can be added into ```Idents()```. For instance:
 ```sh
 Idents(demo) # Check cluster names in Seurat object identity
-Idents(demo) <- demo$cluster_labels # Add cluster label from metadata if not into objects identity
+Idents(demo) <- demo$Tissue # Add cluster label from metadata if not into objects identity
 
 # Export cell type coordinates to an output directory
 subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, dir.out = "coord_out")
@@ -93,25 +93,25 @@ sp
 The visualization of gradient distance axis is a critical step since ensures that the desired distance axis between the clusters of interest is correct for the following steps. Using ```return_obj = F``` distance gradient can be visualized:
 ```sh
 # Visualize spots gradient 
-vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
-vis
+gradient_vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
+gradient_vis
 ```
 ![](../images/figs1/fracture_gradient.png)
 
 After gradient visualization, subsetting out cells, using ```subset``` function that were not included in the gradient distance calculation is recommended, since it allows a cleaner gradient visualization and faster processing. Spatialtime (st) values must be added into ```meta.data``` and cells with st values equals to zero removed:  
 ```sh
 # Calculate gradient distance values and add into metadata
-vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
+gradient_calc <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
 View(vis@meta.data)
 
 # Subset out spots which spatialtime (st) value were not calculated
-vis <- subset(vis, subset = st != 0)
+gradient_calc <- subset(gradient_calc, subset = st != 0)
 ```
 
 In order to investigate changes in gene expression across the axis distance gradient, we need to calculate and replace pseudotime values for each individual spots with their corresponding spatialtime value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
 ```sh
 # Calculate pseudotime and visualize genes differentialy expressed across distance gradient
-ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = F)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = F)
 p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
 p
 ```
@@ -125,7 +125,7 @@ write.csv(genes, file = "/path/directory")
 Also, we can analyzing gene expression simply across pseudotime. This time, ```return_obj``` is set to ```TRUE```, which returns Seurat object with pseudotime added into metadata. Then, genes of interest can be visualized across pseudotime. 
 ```sh
 # Calculate pseudotime
-ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = T)
+ps <- Pseudo2Time(vis, assay = "SCT", return_obj = T)
 # Visualize genes across pseudotime 
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene")
 ```
@@ -166,9 +166,6 @@ library(reshape2)
 demo <- readRDS("fracture_demo.rds")
 View(demo@meta.data)
 
-Idents(demo) # Check cluster names in Seurat object identity
-Idents(demo) <- demo$cluster_labels # Add cluster label from metadata into objects identity
-
 # Export cell type coordinates to an output directory
 subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, dir.out = "coord_out")
 ```
@@ -187,21 +184,21 @@ sp
 2.3 Visualize gradient distance calculated in the previous step. If gradient distance axis follows the desired direction between clusters assign ```return_obj``` to ```TRUE``` allowing spatialtime values addition into object's metadata. For instance:
 ```sh
 # Distance gradient visualization ----
-vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
-vis
+gradient_vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
+gradient_vis
 # Adding st into metadata
-vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
+gradient_calc <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
 View(vis@meta.data)
 
 # Subset out spots which spatialtime (st) value were not calculated
-vis <- subset(vis, subset = st != 0)
+gradient_calc <- subset(gradient_calc, subset = st != 0)
 ```
 ![](../images/figs2/gradient.png)
 
 2.4 By calculating pseudotime and assigning ```return_obj``` to ```FALSE``` genes differentialy expressed across spatial distance can be visualize using a heatmap:
 ```sh
 # Pseudotime Calculation ----
-ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = F)
+ps <- Pseudo2Time(vis, assay = "SCT", return_obj = F)
 p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
 p
 ```
@@ -216,7 +213,7 @@ write.csv(genes, file = "/path/directory")
 2.6 Once more, in order to assess individual genes expression across spatialtime distance gradient we perform: 
 ```sh
 # Calculate pseudotime
-ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = T)
+ps <- Pseudo2Time(vis, assay = "SCT", return_obj = T)
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene", span = 0.5)
 ```
 ![](../images/figs2/gene.png)
@@ -281,8 +278,8 @@ sp
 ![](../images/figs3/gradient.png)
 
 ```sh
-vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
-vis
+gradient_vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
+gradient_vis
 ```
 
 
@@ -290,16 +287,15 @@ vis
 SpatialTime distance gradient can be assessed using:
 ```sh
 # Visualization spatialtime gradient ----
-vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
-View(vis@meta.data)
-vis <- subset(vis, subset = st != 0)
+gradient_calc <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
+gradient_calc <- subset(vis, subset = st != 0)
 ```
 
 3.6 
 ```Pseudotime``` allows calculating and adding pseudotime values in the object metadata. By replacing the calculated spatialtime values into their respective pseudotime, it becomes possible to infer which genes are differential expressed as a gradient of distance. Briefly, we can assess which genes are up or downregulated as you move away from the reference line.  
 ```sh
 # Calculate pseudotime ----
-ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = F)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = F)
 p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
 p
 ```
@@ -312,7 +308,7 @@ write.csv(genes, file = "/path/directory")
 
 3.7 Basic Visualization 
 ```sh
-ps <- Pseudo2Time(vis, assay = "SCT", cores = 8, return_obj = T)
+ps <- Pseudo2Time(vis, assay = "SCT", return_obj = T)
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene", span = 0.5)
 ```
 ![](../images/figs3/genes.png)

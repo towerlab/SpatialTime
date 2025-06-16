@@ -105,3 +105,26 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
   return(p)
 
 }
+
+#' ScaleRatio
+#' @param object Seurat object input
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @export
+#'
+#' @details
+#' Image scale adjustment for SpatialDimPlot
+
+ScaleRatio <- function(object = NULL) {
+
+  if (is.null(file) || class(file) != "Seurat") {
+    stop("Error. File not found or format not supported.")
+  }
+
+  coord <- GetTissueCoordinates(object = object)
+  myratio <- (max(coord$imagerow) - min(coord$imagerow)) / (max(coord$imagecol) - min(coord$imagecol))
+
+  return(myratio)
+}
+

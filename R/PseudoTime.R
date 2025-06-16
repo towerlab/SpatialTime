@@ -20,7 +20,7 @@
 
 
 PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3,
-                       mean_expr = 0.1, pvalue = 0.05, cores = 4, return_obj = F) {
+                       mean_expr = 0.1, pvalue = 0.05, cores = 1, return_obj = F) {
 
   if (!is(file, "Seurat")) {stop("File is not a Seurat object.")}
 
@@ -89,7 +89,7 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
 #' @export
 
 Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3,
-                        mean_expr = 0.1, pvalue = 0.05, cores = 4, return_obj = F) {
+                        mean_expr = 0.1, pvalue = 0.05, cores = 1, return_obj = F) {
 
   if (!is(file, "Seurat")) {
     stop("File is not a Seurat object.")

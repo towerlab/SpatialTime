@@ -11,7 +11,7 @@ PseudoTime(
   min_cells = 3,
   mean_expr = 0.1,
   pvalue = 0.05,
-  cores = 4,
+  cores = 1,
   return_obj = F
 )
 }

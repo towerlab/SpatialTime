@@ -118,7 +118,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
 
 ScaleRatio <- function(object = NULL) {
 
-  if (is.null(file) || class(file) != "Seurat") {
+  if (is.null(object) || class(object) != "Seurat") {
     stop("Error. File not found or format not supported.")
   }
 

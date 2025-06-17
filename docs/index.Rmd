@@ -22,7 +22,6 @@ install.packages("SpatialTime")
 ```
 Development version install:
 ```sh
-
 #(install.packages("devtools")
 devtools::install_github("dimitrisokolowskei/SpatialTime")
 ```
@@ -32,7 +31,6 @@ The ```igraph``` package version < ```2.1.0``` are required for ```SpatialTime``
 ```sh
 library(remotes)
 
-
 remove.packages("igraph")
 install_version("igraph", version = "2.0.3")
 ```
@@ -41,7 +39,7 @@ install_version("igraph", version = "2.0.3")
 SpatialTime package requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
 ## Dataset 
-For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vignette at zenodo repository [here](put_link).
+For this vignette tutorial, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vignette at zenodo repository [here](put_link).
 
 ## Analysis Approaches
 SpatialTime supports different strategies for delimiting spatial reference spots by: 1) Manually defining references spots using the package build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ;   

@@ -1500,7 +1500,8 @@ expression profiling based on proximity of any reference line.</p>
 <p>Package install via CRAN:</p>
 <pre class="sh"><code>install.packages(&quot;SpatialTime&quot;)</code></pre>
 <p>Development version install:</p>
-<pre class="sh"><code>#(install.packages(&quot;devtools&quot;)
+<pre class="sh"><code>
+#(install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;dimitrisokolowskei/SpatialTime&quot;)</code></pre>
 </div>
 <div id="dependencies-requirements" class="section level2">
@@ -1511,12 +1512,13 @@ required for <code>SpatialTime</code> package. Uninstall
 For instance:</p>
 <pre class="sh"><code>library(remotes)
 
+
 remove.packages(&quot;igraph&quot;)
 install_version(&quot;igraph&quot;, version = &quot;2.0.3&quot;)</code></pre>
 </div>
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
-<p>SpatialTime requires a spatial dataset already processed and
+<p>SpatialTime package requires a spatial dataset already processed and
 integrated. Thus, any doubts on how to proceed with ST basic analysis,
 please visit <a href="https://satijalab.org/seurat/articles/spatial_vignette">Seurat</a>
 vignette.</p>
@@ -1565,7 +1567,7 @@ types labels are in Seurat object <code>Idents()</code>. In case they’re
 not, clusters labels from <code>seurat@meta.data</code> can be added
 into <code>Idents()</code>. For instance:</p>
 <pre class="sh"><code>Idents(demo) # Check cluster names in Seurat object identity
-Idents(demo) &lt;- demo$Tissue # Add cluster label from metadata if not into objects identity
+Idents(demo) &lt;- demo$Tissue # Add cluster label from metadata if not set as theinto objects current identity
 
 # Export cell type coordinates to an output directory
 subset2Labels(demo, cluster = c(&quot;Cartilage&quot;,&quot;HypCH&quot;,&quot;Woven&quot;), export.all = F, dir.out = &quot;coord_out&quot;)</code></pre>

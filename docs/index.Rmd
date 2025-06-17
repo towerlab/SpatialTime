@@ -22,6 +22,7 @@ install.packages("SpatialTime")
 ```
 Development version install:
 ```sh
+
 #(install.packages("devtools")
 devtools::install_github("dimitrisokolowskei/SpatialTime")
 ```
@@ -30,6 +31,7 @@ The ```igraph``` package version < ```2.1.0``` are required for ```SpatialTime``
 
 ```sh
 library(remotes)
+
 
 remove.packages("igraph")
 install_version("igraph", version = "2.0.3")

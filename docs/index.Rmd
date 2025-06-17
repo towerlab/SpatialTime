@@ -73,7 +73,7 @@ SpatialDimPlot(demo, images = "slice1") +
 1.2 Export cluster's XY coordinates of interest. Make sure that cell types labels are in Seurat object ```Idents()```. In case they're not, clusters labels from ```seurat@meta.data``` can be added into ```Idents()```. For instance:
 ```sh
 Idents(demo) # Check cluster names in Seurat object identity
-Idents(demo) <- demo$Tissue # Add cluster label from metadata if not into objects identity
+Idents(demo) <- demo$Tissue # Add cluster label from metadata if not set as theinto objects current identity
 
 # Export cell type coordinates to an output directory
 subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, dir.out = "coord_out")
@@ -99,7 +99,7 @@ The visualization of gradient distance axis is a critical step since ensures tha
 gradient_vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
 gradient_vis
 ```
-![](../images/figs1/fracture_gradient.png)
+![](../images/figs1/selection_gradient.png)
 
 After gradient visualization, subsetting out cells, using ```subset``` function that were not included in the gradient distance calculation is recommended, since it allows a cleaner gradient visualization and faster processing. Spatialtime (st) values must be added into ```meta.data``` and cells with st values equals to zero removed:  
 ```sh
@@ -196,7 +196,7 @@ View(vis@meta.data)
 # Subset out spots which spatialtime (st) value were not calculated
 gradient_calc <- subset(gradient_calc, subset = st != 0)
 ```
-![](../images/figs2/gradient.png)
+![](../images/figs2/cluster_gradient.png)
 
 2.4 By calculating pseudotime and assigning ```return_obj``` to ```FALSE``` genes differentialy expressed across spatial distance can be visualize using a heatmap:
 ```sh
@@ -278,7 +278,7 @@ file <- read.csv("coord_out/Woven_coordinates.csv")
 sp <- SpatialTime(data, reference = "Cartilage", compare = file)
 sp
 ```
-![](../images/figs3/gradient.png)
+![](../images/figs3/fiji_gradient.png)
 
 ```sh
 gradient_vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
@@ -330,7 +330,9 @@ module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "mo
 GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.5)
 ```
 ![](../images/figs3/pathway.png)
+
 ## Session Info
+
 ```sh
 R version 4.3.2 (2023-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64 (64-bit)

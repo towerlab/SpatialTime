@@ -1,6 +1,8 @@
 #' ShinySelection
 #' @param file Seurat object
+#' @param id Seurat object metadata column with cluster labels
 #' @param file.name Coordinates spots output file
+#' @param angle Plotly SpatialFeaturePlot rotation angle
 #' @details
 #' Shiny app for manual spots selection and coordinates export.
 #'
@@ -11,7 +13,7 @@
 #' @import umap
 #' @export
 
-ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.csv") {
+ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots_random.csv", angle = -90) {
 
   spatial_coords <- GetTissueCoordinates(file)
   colnames(spatial_coords) <- c("x", "y")
@@ -22,6 +24,13 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
   metadata$barcode <- rownames(metadata)
 
   plot_data <- merge(spatial_coords, metadata, by = "barcode")
+
+  # Apply rotation transformation
+  angle <- angle * (pi / 180)  # Convert degrees to radians
+  rotation_matrix <- matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)), nrow = 2)
+  rotated_coords <- as.data.frame(as.matrix(plot_data[, c("x", "y")]) %*% rotation_matrix)
+  colnames(rotated_coords) <- c("x_rot", "y_rot")
+  plot_data <- cbind(plot_data, rotated_coords)
 
   # Corrected color mapping
   unique_colors <- rainbow(length(unique(plot_data[[id]])))
@@ -35,7 +44,7 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
       current_indices <- selected_indices()
       current_view <- view_state()
 
-      p <- plot_ly(plot_data, x = ~x, y = ~y,
+      p <- plot_ly(plot_data, x = ~x_rot, y = ~y_rot,
                    type = 'scatter',
                    mode = 'markers',
                    marker = list(
@@ -47,13 +56,15 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
                      )
                    ),
                    selectedpoints = current_indices - 1,  # 0-based indexing
-                   source = "spatial_plot") %>%
+                   source = "spatial_plot",
+                   text = ~paste("Cluster:", plot_data[[id]])) %>%
         layout(
           clickmode = 'event+select',
           title = "Click spots to select/deselect",
           xaxis = list(title = "X coordinate", scaleanchor = "y", scaleratio = 1),
           yaxis = list(title = "Y coordinate"),
-          dragmode = 'zoom'
+          dragmode = 'zoom',
+          legend = list(title = list(text = 'Clusters'), itemsizing = 'constant')
         ) %>%
         config(
           scrollZoom = TRUE,
@@ -111,7 +122,7 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
     selected_spots_data <- reactive({
       indices <- selected_indices()
       if (length(indices) > 0) {
-        plot_data[indices, c("barcode", "x", "y", id)]
+        plot_data[indices, c("barcode", "x_rot", "y_rot", id)]
       } else {
         data.frame()
       }
@@ -123,8 +134,8 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
         result <- "Selected spots:\n"
 
         for (i in 1:nrow(spots_data)) {
-          x_val <- as.numeric(spots_data[i, "x"])
-          y_val <- as.numeric(spots_data[i, "y"])
+          x_val <- as.numeric(spots_data[i, "x_rot"])
+          y_val <- as.numeric(spots_data[i, "y_rot"])
           barcode <- as.character(spots_data[i, "barcode"])
           cluster <- as.character(spots_data[i, id])
 
@@ -152,8 +163,8 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
     observeEvent(input$export, {
       spots_data <- selected_spots_data()
       if (nrow(spots_data) > 0) {
-        spots_data$x <- as.numeric(spots_data$x)
-        spots_data$y <- as.numeric(spots_data$y)
+        spots_data$x_rot <- as.numeric(spots_data$x_rot)
+        spots_data$y_rot <- as.numeric(spots_data$y_rot)
 
         write.csv(spots_data, file.name, row.names = FALSE)
         print(paste("Exported", nrow(spots_data), "spots with barcodes to", file.name))
@@ -190,7 +201,7 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots.c
 #' @param seurat_obj Seurat object
 #' @param coord_file Spots selection coordinates
 #' @param slice.n Slice number
-#' @param id Seurat object metadata feature name containing clusters identities
+#'
 #' @details
 #' This function allows coordinates extraction from specific spots barcodes previously selected in ShinySelection function
 #'

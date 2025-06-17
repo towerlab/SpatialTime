@@ -31,13 +31,12 @@ The ```igraph``` package version < ```2.1.0``` are required for ```SpatialTime``
 ```sh
 library(remotes)
 
-
 remove.packages("igraph")
 install_version("igraph", version = "2.0.3")
 ```
 
 ## Prerequisites
-SpatialTime requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
+SpatialTime package requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
 ## Dataset 
 For this vignette, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vignette at zenodo repository [here](put_link).

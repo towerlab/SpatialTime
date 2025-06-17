@@ -4,12 +4,21 @@
 \alias{ShinySelection}
 \title{ShinySelection}
 \usage{
-ShinySelection(file = NULL, id = NULL, file.name = "selected_spots.csv")
+ShinySelection(
+  file = NULL,
+  id = NULL,
+  file.name = "selected_spots_random.csv",
+  angle = -90
+)
 }
 \arguments{
 \item{file}{Seurat object}
 
+\item{id}{Seurat object metadata column with cluster labels}
+
 \item{file.name}{Coordinates spots output file}
+
+\item{angle}{Plotly SpatialFeaturePlot rotation angle}
 }
 \description{
 ShinySelection

@@ -21,4 +21,6 @@ Imports:
     devtools,
     shiny,
     plotly,
-    umap
+    umap,
+    monocle3,
+    pheatmap

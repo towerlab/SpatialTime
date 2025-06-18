@@ -18,7 +18,6 @@
 #' @import fs
 #' @export
 
-
 PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3,
                        mean_expr = 0.1, pvalue = 0.05, cores = 1, return_obj = F) {
 
@@ -66,7 +65,6 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
   return(hsmm_sub)
 
 }
-
 
 #' Pseudo2Time
 #' @param file Seurat object with module annotation
@@ -139,6 +137,59 @@ Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 
   }
 
   return(hsmm_sub)
+
+}
+
+#' PseudoM3Time
+#' @param file Seurat object
+#' @param assay Assays to choose
+#' @param values Use pseudotime or spatialtime
+#' @param q_cutoff q value cutoff
+#' @param morans_cutoff morans values cutoff
+#' @param cores CPU cores
+#'
+#' @details
+#' This function calculates pseudotime using Monocle3
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @import monocle3
+#' @export
+
+PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", "st"), q_cutoff = 0.01, morans_cutoff = 0.05, cores = 4) {
+
+  data <- as(as.matrix(file@assays[[assay]]$data), "sparseMatrix")
+  fData <- data.frame(gene_short_name = row.names(data), row.names = row.names(data))
+  cds <- new_cell_data_set(data,cell_metadata = file@meta.data, gene_metadata = fData)
+
+  cds <- preprocess_cds(cds)
+  cds <- reduce_dimension(cds, reduction_method = "UMAP")
+  cds <- cluster_cells(cds)
+  cds <- learn_graph(cds)
+  cds <- order_cells(cds, reduction_method = "UMAP", verbose = F)
+
+  cds@colData$Pseudotime <- pseudotime(cds)
+
+  modulated_genes <- graph_test(cds, neighbor_graph = "principal_graph", cores = cores)
+  genes <- row.names(subset(modulated_genes, q_value <= q_cutoff & morans_I > morans_cutoff))
+
+  if (values == "pt") {
+    pt.matrix <- exprs(cds)[match(genes,rownames(rowData(cds))),order(cds@colData$Pseudotime)]
+    pt.matrix <- t(apply(pt.matrix,1,function(x){smooth.spline(x,df=3)$y}))
+    pt.matrix <- t(apply(pt.matrix,1,function(x){(x-mean(x))/sd(x)}))
+
+  }
+
+  if (values == "st") {
+    pt.matrix <- exprs(cds)[match(genes,rownames(rowData(cds))),order(cds@colData$st)]
+    pt.matrix <- t(apply(pt.matrix,1,function(x){smooth.spline(x,df=3)$y}))
+    pt.matrix <- t(apply(pt.matrix,1,function(x){(x-mean(x))/sd(x)}))
+  } else {
+
+    stop("values must be equal to pt or st")
+  }
+
+  return(pt.matrix)
 
 }
 

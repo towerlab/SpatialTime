@@ -128,3 +128,23 @@ ScaleRatio <- function(object = NULL) {
   return(myratio)
 }
 
+#' gradient_heatmap
+#' @param mtx Gene expression matrix
+#' @param clus_method Clustering method
+#' @param cutreee_rows Cut heatmap
+#' @param cluster_cols Clustering columns
+#' @param color Heatmap colors
+#'
+#' @import pheatmap
+#' @export
+#'
+#' @details
+#' This functions plots a heatmap for Pseudo3MTime
+#'
+gradient_heatmap <- function(mtx = NULL, clus_method = "ward.D2", cutree_rows = 3,
+                             cluster_cols = FALSE, color = colorRampPalette(rev(brewer.pal(11, "Spectral")))(100)) {
+
+  ph <- pheatmap(mtx, clustering_method = clus_method, cutree_rows = cutree_rows, cluster_cols = cluster_cols, hm_color = color)
+  return(ph)
+
+}

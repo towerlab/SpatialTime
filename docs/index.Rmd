@@ -38,8 +38,8 @@ install_version("igraph", version = "2.0.3")
 ## Prerequisites
 SpatialTime package requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
-## Dataset 
-For this vignette tutorial, we provide a ST example dataset obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL) and additional files to run the vignette at zenodo repository [here](put_link).
+## Introduction 
+Fractures represent a severe form of musculoskeletal trauma imposing significant burden for individuals health and well-being. Understanding cellular and molecular dynamics upon fractures could provide relevant insights for therapeutic interventions and enhanced injury healing. For this vignette tutorial, we provide a ST example dataset of mice submitted to tibia osteotomy obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL). Additional files to run the vignette can be found at zenodo repository [here](put_link).
 
 ## Analysis Approaches
 SpatialTime supports different strategies for delimiting spatial reference spots by: 1) Manually defining references spots using the package build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ;   
@@ -77,7 +77,21 @@ Idents(demo) <- demo$Tissue # Add cluster label from metadata if not set as thei
 # Export cell type coordinates to an output directory
 subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, dir.out = "coord_out")
 ```
-1.3 Once the desired clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance calculation. The package's build-in Shiny app allows the manual selection of spots in a particular sample slice as reference. To navigate trough the app, use ```shift+left click``` to move around the sample and ```ctrl+left click``` to (un)select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing users to zoom in or zoom out. After spots selection, click ```Export Selected Spots``` and close the Shiny app. The ```id``` parameter have to include ```seurat_obj@meta.data``` column name that contains cell types ID's for better visualization in the shiny app. 
+1.3 Once the desired clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance calculation. The package's build-in Shiny app allows the visualization of individual spatial spots colored by cluster. Additionally, hoovering the mouse cursor over individual spots shows information of which cluster the spots belongs to and its XY coordinate.
+![](../images/figs1/shinyapp_noselection.png)
+
+To navigate trough the app, use ```shift+left click``` to move around the sample and ```ctrl+left click``` to (un)select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing users to zoom in or zoom out. After spots selection, click ```Export Selected Spots``` and close the Shiny app. The ```id``` parameter have to include ```seurat_obj@meta.data``` column name that contains cell types ID's for better visualization in the shiny app. 
+
+![](../images/figs1/shinyapp_selection.png)
+```sh
+# First spots selected
+Selected spots:
+Barcode: GACCGTCAGGTCGTGA-1_1, Cluster: Cartilage, Coordinates: (379.704, -135.0951)
+Barcode: CTAGTATTCGGAATTA-1_1, Cluster: Cartilage, Coordinates: (376.2911, -141.045)
+Barcode: CAACTATATCGAATGC-1_1, Cluster: Cartilage, Coordinates: (372.8783, -147.0251)
+...
+```
+Run Shiny app and select reference spots:
 ```sh
 # Selecting reference spots 
 app <- ShinySelection(demo, id = "Tissue")
@@ -127,7 +141,7 @@ write.csv(genes, file = "/path/directory")
 Also, we can analyzing gene expression simply across pseudotime. This time, ```return_obj``` is set to ```TRUE```, which returns Seurat object with pseudotime added into metadata. Then, genes of interest can be visualized across pseudotime. 
 ```sh
 # Calculate pseudotime
-ps <- Pseudo2Time(vis, assay = "SCT", return_obj = T)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = T)
 # Visualize genes across pseudotime 
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene")
 ```
@@ -147,7 +161,7 @@ wnt <- c("Rspo3","Rspo4","Tcf7","Tcf7l1","Tcf7l2","Wnt1","Wnt10a","Wnt10b","Wnt1
 
 # Add gene modules in object with pseudotime calculated
 gene_modules <- list(Module1 = bmp, Module2 = wnt)
-module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "cluster")
+module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "cluster")
 GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.1)
 ```
 ![](../images/figs1/pathway.png)
@@ -215,7 +229,7 @@ write.csv(genes, file = "/path/directory")
 2.6 Once more, in order to assess individual genes expression across spatialtime distance gradient we perform: 
 ```sh
 # Calculate pseudotime
-ps <- Pseudo2Time(vis, assay = "SCT", return_obj = T)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = T)
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene", span = 0.5)
 ```
 ![](../images/figs2/gene.png)
@@ -233,7 +247,7 @@ wnt <- c("Rspo3","Rspo4","Tcf7","Tcf7l1","Tcf7l2","Wnt1","Wnt10a","Wnt10b","Wnt1
 
 # Add gene modules in object with pseudotime calculated
 gene_modules <- list(Module1 = bmp, Module2 = wnt)
-module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "cluster")
+module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "cluster")
 GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.1)
 ```
 
@@ -310,7 +324,7 @@ write.csv(genes, file = "/path/directory")
 
 3.7 Basic Visualization 
 ```sh
-ps <- Pseudo2Time(vis, assay = "SCT", return_obj = T)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = T)
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene", span = 0.5)
 ```
 ![](../images/figs3/genes.png)
@@ -325,7 +339,7 @@ wnt <- c("Rspo3","Rspo4","Tcf7","Tcf7l1","Tcf7l2","Wnt1","Wnt10a","Wnt10b","Wnt1
 
 # Add gene modules in object with pseudotime calculated
 gene_modules <- list(Module1 = bmp, Module2 = wnt)
-module <- AddModuleScore(vis, features = gene_modules, assay = "SCT", name = "module", nbin = 8)
+module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "module", nbin = 8)
 GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.5)
 ```
 ![](../images/figs3/pathway.png)

@@ -158,6 +158,14 @@ Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 
 
 PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", "st"), q_cutoff = 0.01, morans_cutoff = 0.05, cores = 4) {
 
+  if (!is(file, "Seurat")) {
+    stop("File is not a Seurat object.")
+  }
+
+  if (!assay %in% names(file@assays)) {
+    stop(paste("Assay", assay, "not found in the Seurat object."))
+  }
+
   data <- as(as.matrix(file@assays[[assay]]$data), "sparseMatrix")
   fData <- data.frame(gene_short_name = row.names(data), row.names = row.names(data))
   cds <- new_cell_data_set(data,cell_metadata = file@meta.data, gene_metadata = fData)

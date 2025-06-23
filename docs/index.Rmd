@@ -344,6 +344,21 @@ GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", spa
 ```
 ![](../images/figs3/pathway.png)
 
+## Alternative Analysis
+SpatialTime package was originally conceived using ```monocle``` for spatialvalues calculation mainly to its reliability and heatmap plotting facility. However, monocle's newer versions such as ```monocle3``` brought series of performance and analysis enhancements. Thus, we additionally provide a monocle3 wrapper function that allows equivalent spatialtime calculation in the standard SpatialTime pipeline. Notice that ```values``` parameter can be set as ```pt``` or ```st``` returning pseudotime or spatialtime values, respectively. For instance:
+
+```sh
+ps <- PseudoM3Time(fracture, assay = "SCT", values = "st", q_cutoff = 0.0000001, cores = 6, return_obj = F)
+
+ph <- gradient_heatmap(ps, cutree_rows = 3, rownames = F)
+```
+![](../images/figs4/gradient_heatmap.png)
+
+For downstream analysis, such as module scores, object ```seurat_obj$meta.data``` should be returned instead of a expression matrix. Thus, set ```return_obj = T```:
+```sh
+ps <- PseudoM3Time(fracture, assay = "SCT", values = "st", q_cutoff = 0.0000001, cores = 6, return_obj = T)
+```
+
 ## Session Info
 
 ```sh

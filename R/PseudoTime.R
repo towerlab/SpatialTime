@@ -156,7 +156,7 @@ Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 
 #' @import monocle3
 #' @export
 
-PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", "st"), q_cutoff = 0.01, morans_cutoff = 0.05, cores = 4) {
+PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", "st"), q_cutoff = 0.01, morans_cutoff = 0.05, cores = 4, return_obj = T) {
 
   if (!is(file, "Seurat")) {
     stop("File is not a Seurat object.")
@@ -178,6 +178,16 @@ PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", 
 
   cds@colData$Pseudotime <- pseudotime(cds)
 
+  if (return_obj) {
+
+    cds@colData$Pseudotime <- cds@colData$st
+    file@meta.data[["Pseudotime"]] <- as.data.frame(cds@colData$Pseudotime)
+    colnames(file@meta.data)[colnames(file@meta.data) == "Pseudotime$cds@colData$Pseudotime"] <- "Pseudotime"
+
+    return(file)
+
+  }
+
   modulated_genes <- graph_test(cds, neighbor_graph = "principal_graph", cores = cores)
   genes <- row.names(subset(modulated_genes, q_value <= q_cutoff & morans_I > morans_cutoff))
 
@@ -186,15 +196,15 @@ PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", 
     pt.matrix <- t(apply(pt.matrix,1,function(x){smooth.spline(x,df=3)$y}))
     pt.matrix <- t(apply(pt.matrix,1,function(x){(x-mean(x))/sd(x)}))
 
-  }
-
-  if (values == "st") {
+  } else if (values == "st") {
     pt.matrix <- exprs(cds)[match(genes,rownames(rowData(cds))),order(cds@colData$st)]
     pt.matrix <- t(apply(pt.matrix,1,function(x){smooth.spline(x,df=3)$y}))
     pt.matrix <- t(apply(pt.matrix,1,function(x){(x-mean(x))/sd(x)}))
+
   } else {
 
     stop("values must be equal to pt or st")
+
   }
 
   return(pt.matrix)

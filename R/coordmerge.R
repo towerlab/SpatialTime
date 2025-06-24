@@ -27,6 +27,30 @@ CoordMerge <- function(files = "", pattern = "") {
 }
 
 
+#' CoordMergeHD
+#' @param files Seurat object as Input
+#' @param pattern Cluster names in Idents
+#'
+#'
+#' @details
+#' This function calculates and adds coordinates values to each line drawn in data frame for Spatial HD.
+#'
+#' @import Seurat
+#' @import tidyverse
+#' @import fs
+#' @export
+CoordMergeHD <- function(files = "", pattern = "") {
 
+  csv_files <- str_sort(fs::dir_ls(files))
 
+  selected_file <- csv_files[str_detect(csv_files, pattern)]
+
+  rdr <- readr::read_csv(selected_file)
+
+  if (!all(c("x","y","cell") %in% names(rdr))) {
+    stop("This file does not contain expected coordinates features.")
+  }
+
+  return(rdr)
+}
 

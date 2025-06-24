@@ -248,7 +248,7 @@ wnt <- c("Rspo3","Rspo4","Tcf7","Tcf7l1","Tcf7l2","Wnt1","Wnt10a","Wnt10b","Wnt1
 # Add gene modules in object with pseudotime calculated
 gene_modules <- list(Module1 = bmp, Module2 = wnt)
 module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "cluster")
-GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.1)
+GeneVis(file = module, column = c("cluster1", "cluster2"), signal = "pathway", span = 0.1)
 ```
 
 ![](../images/figs2/pathway.png)
@@ -344,7 +344,7 @@ GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", spa
 ```
 ![](../images/figs3/pathway.png)
 
-## Alternative Analysis
+## Monocle3 Usage
 SpatialTime package was originally conceived using ```monocle``` for spatialvalues calculation mainly to its reliability and heatmap plotting facility. However, monocle's newer versions such as ```monocle3``` brought series of performance and analysis enhancements. Thus, we additionally provide a monocle3 wrapper function that allows equivalent spatialtime calculation in the standard SpatialTime pipeline. Notice that ```values``` parameter can be set as ```pt``` or ```st``` returning pseudotime or spatialtime values, respectively. For instance:
 
 ```sh

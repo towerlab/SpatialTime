@@ -211,10 +211,10 @@ gradient_calc <- subset(gradient_calc, subset = st != 0)
 ```
 ![](../images/figs2/cluster_gradient.png)
 
-2.4 By calculating pseudotime and assigning ```return_obj``` to ```FALSE``` genes differentialy expressed across spatial distance can be visualize using a heatmap:
+2.4 By calculating pseudotime and assigning ```return_obj``` to ```FALSE``` genes differential expressed across spatial distance can be visualize using a heatmap:
 ```sh
 # Pseudotime Calculation ----
-ps <- Pseudo2Time(vis, assay = "SCT", return_obj = F)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = F)
 p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
 p
 ```
@@ -304,7 +304,7 @@ SpatialTime distance gradient can be assessed using:
 ```sh
 # Visualization spatialtime gradient ----
 gradient_calc <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = T)
-gradient_calc <- subset(vis, subset = st != 0)
+gradient_calc <- subset(gradient_calc, subset = st != 0)
 ```
 
 3.6 

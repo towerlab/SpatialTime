@@ -133,7 +133,7 @@ ScaleRatio <- function(object = NULL) {
 #' @param clus_method Clustering method
 #' @param cutreee_rows Cut heatmap
 #' @param cluster_cols Clustering columns
-#' @param color Heatmap colors
+#' @param hm_color Heatmap colors
 #'
 #' @import pheatmap
 #' @export
@@ -142,9 +142,9 @@ ScaleRatio <- function(object = NULL) {
 #' This functions plots a heatmap for Pseudo3MTime
 #'
 gradient_heatmap <- function(mtx = NULL, clus_method = "ward.D2", cutree_rows = 3,
-                             cluster_cols = F, rownames = T, color = colorRampPalette(rev(brewer.pal(11, "Spectral")))(100)) {
+                             cluster_cols = F, rownames = T, hm_color = colorRampPalette(rev(brewer.pal(11, "Spectral")))(100)) {
 
-  ph <- pheatmap(mtx, clustering_method = clus_method, cutree_rows = cutree_rows, cluster_cols = cluster_cols, show_rownames = rownames, hm_color = color)
+  ph <- pheatmap(mtx, clustering_method = clus_method, cutree_rows = cutree_rows, cluster_cols = cluster_cols, show_rownames = rownames, color = hm_color)
   return(ph)
 
 }

@@ -10,7 +10,8 @@ PseudoM3Time(
   values = c("pt", "st"),
   q_cutoff = 0.01,
   morans_cutoff = 0.05,
-  cores = 4
+  cores = 4,
+  return_obj = T
 )
 }
 \arguments{

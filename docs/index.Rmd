@@ -13,7 +13,7 @@ output:
     toc_depth: '3'
 ---
 # SpatialTime 
-Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression and module score pathways across a distance gradient by establishing spatially defined reference points and calculating ST spots distances against those reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
+Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression and module score pathways across a distance gradient by establishing spatially defined reference points and calculating ST spots distances against reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
 
 ## Installation
 Package install via CRAN:
@@ -39,7 +39,7 @@ install_version("igraph", version = "2.0.3")
 SpatialTime package requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
 ## Introduction 
-Fractures represent a severe form of musculoskeletal trauma imposing significant burden for individuals health and well-being. Understanding cellular and molecular dynamics upon fractures could provide relevant insights for therapeutic interventions and enhanced injury healing. For this vignette tutorial, we provide a ST example dataset of mice submitted to tibia osteotomy obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL). Additional files to run the vignette can be found at zenodo repository [here](put_link).
+Fractures represent a severe form of musculoskeletal trauma imposing significant burden for individuals health. Understanding cellular and molecular dynamics upon fractures could provide relevant insights for therapeutic interventions and enhanced injury healing. For this vignette tutorial, we provide a ST example dataset of mice submitted to tibia osteotomy obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL). Additional files to run the vignette can be found at zenodo repository [here](put_link).
 
 ## Analysis Approaches
 SpatialTime supports different strategies for delimiting spatial reference spots by: 1) Manually defining references spots using the package build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ;   
@@ -110,7 +110,8 @@ The visualization of gradient distance axis is a critical step since ensures tha
 ```sh
 # Visualize spots gradient 
 gradient_vis <- SpatialVis(demo, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
-gradient_vis
+gradient_vis +
+  theme(aspect.ratio = ratio)
 ```
 ![](../images/figs1/selection_gradient.png)
 
@@ -124,26 +125,25 @@ View(vis@meta.data)
 gradient_calc <- subset(gradient_calc, subset = st != 0)
 ```
 
-In order to investigate changes in gene expression across the axis distance gradient, we need to calculate and replace pseudotime values for each individual spots with their corresponding spatialtime value using a ```monocle``` package wrapper function ```Pseudo2Time```. Notice that, in this case, ```return_obj``` is set to ```FALSE``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
+In order to investigate changes in gene expression across the axis distance gradient, we need to calculate and replace pseudotime values for each individual spots with their corresponding spatialtime value using a ```monocle3``` package wrapper function ```PseudoM3Time```. Notice that, in this case, ```return_obj = F``` returning monocle's as ```SingleCellExperiment``` format. That way, gene expression across distance gradient can be visualized using a heatmap as follows:
 ```sh
 # Calculate pseudotime and visualize genes differentialy expressed across distance gradient
-ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = F)
-p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
-p
+ps <- PseudoM3Time(gradient_calc, assay = "SCT", values = "st", return_obj = F)
+hm <- gradient_heatmap(ps, rownames = F)
 ```
 ![](../images/figs1/frac_monocle.png)
 
 Furthermore, genes in the heatmap cluster's can be exported allowing a detailed assessment of genes present and their expression across spatialtime distance gradient using ```GenesGet``` function. Notice that ```n_clusters``` parameter should be equal to ```plot_pseudotime_heatmap``` ```num_clusters``` parameter. Otherwise, genes might be exported as belonging to wrong clusters:
 ```sh
-genes <- GeneGet(p, n_clusters = 2)
+genes <- GeneGet(hm, n_clusters = 3)
 write.csv(genes, file = "/path/directory")
 ```
 Also, we can analyzing gene expression simply across pseudotime. This time, ```return_obj``` is set to ```TRUE```, which returns Seurat object with pseudotime added into metadata. Then, genes of interest can be visualized across pseudotime. 
 ```sh
 # Calculate pseudotime
-ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = T)
+ps <- PseudoM3Time(gradient_calc, assay = "SCT", values = "st", return_obj = T)
 # Visualize genes across pseudotime 
-GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), signal = "gene")
+GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), span = 0.5, signal = "gene")
 ```
 ![](../images/figs1/gene.png)
 
@@ -161,13 +161,13 @@ wnt <- c("Rspo3","Rspo4","Tcf7","Tcf7l1","Tcf7l2","Wnt1","Wnt10a","Wnt10b","Wnt1
 
 # Add gene modules in object with pseudotime calculated
 gene_modules <- list(Module1 = bmp, Module2 = wnt)
-module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "cluster")
-GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.1)
+module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "module", nbin = 16)
+GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.5)
 ```
 ![](../images/figs1/pathway.png)
 
 ## 2. Cluster selection based approach
-The basic underlying concept of SpatialTime using the cluster selection based approach is the same as previously described. However, there's no need to manually select spatial spots as reference, since all spots within a cluster of interest we'll be used as reference, therefore potentially allowing a even faster and straighfoward analysis.
+The basic underlying concept of SpatialTime using the cluster selection based approach is the same as previously described. However, there's no need to manually select spatial spots as reference, since borderline spots within a cluster of interest we'll be used as reference, therefore allowing a faster and straightforward analysis.
 
 2.1 Import Seurat's object and ensure that cell clusters are annotated and present in your object ```Idents()```. 
 ```sh
@@ -259,7 +259,6 @@ GeneVis(file = module, column = c("cluster1", "cluster2"), signal = "pathway", s
 
 3.2 First, import your Seurat ST object using ```readRDS()``` function. Then, we proceed using ```subsetLabels()``` which allows us to export ST clusters coordinates as excel sheets.
 ```sh
-
 # Required packages
 library(Seurat)
 library(tidyverse)
@@ -344,19 +343,68 @@ GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", spa
 ```
 ![](../images/figs3/pathway.png)
 
-## Monocle3 Usage
-SpatialTime package was originally conceived using ```monocle``` for spatialvalues calculation mainly to its reliability and heatmap plotting facility. However, monocle's newer versions such as ```monocle3``` brought series of performance and analysis enhancements. Thus, we additionally provide a monocle3 wrapper function that allows equivalent spatialtime calculation in the standard SpatialTime pipeline. Notice that ```values``` parameter can be set as ```pt``` or ```st``` returning pseudotime or spatialtime values, respectively. For instance:
+## 4. Spatial Transcriptomics Visium High Definition (HD)
+SpatialTime package also supports 10x genomics Visium HD analysis allowing user to calculate distance gradients in a true single cell resolution. The SpatialTime rationale for HD assays remains with minor modifications from standard cluster-based or image-based approaches. For instance:
+```sh
+library(Seurat)
+library(tidyverse)
+library(SpatialTime)
+library(monocle)
+library(reshape2)
+
+mm <- readRDS("path/seurat_object.rds")
+
+subset2LabelsHD(mm, cluster = c("CellType1", "CellType2"))
+
+ref <- CoordMergeHD("coord_out", pattern = "CellType1")
+other <- CoordMergeHD("coord_out", pattern = "CellType2")
+
+sp <- Spatial2TimeHD(other, ref)
+
+gradient_vis <- SpatialVis(mm, sp, spatial.by = "rel", slice = "slice1", return_obj = F) 
+gradient_vis
+
+ps <- Pseudo2TimeHD(gradient_vis, assay = "Spatial.008um", return_obj = F)
+...
+```
+
+For Fiji image-based analysis:
+```sh
+library(Seurat)
+library(tidyverse)
+library(SpatialTime)
+library(monocle)
+library(reshape2)
+
+mm <- readRDS("path/seurat_object.rds")
+
+colors <- c("Red")
+tissue <- c("CellType1")
+
+data <- SpatialCalc("fiji_output.csv", factor = 1, colors = colors, tissue = tissue)
+
+file <- read.csv("coord_out/{cluster_name}_slice1_coordinates.csv")
+sp <- SpatialTimeHD(data, reference = "CellType1", compare = file)
+sp
+
+gradient_vis <- SpatialVis(mm, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
+gradient_vis
+...
+```
+
+## Monocle Usage
+SpatialTime package was originally conceived using ```monocle``` for spatialvalues calculation mainly to its reliability and heatmap plotting facility. However, monocle's newer versions such as ```monocle3``` brought series of performance and analysis enhancements. Thus, we additionally provide a monocle wrapper function that allows equivalent spatialtime calculation in the standard SpatialTime pipeline. For instance:
 
 ```sh
-ps <- PseudoM3Time(fracture, assay = "SCT", values = "st", q_cutoff = 0.0000001, cores = 6, return_obj = F)
-
-ph <- gradient_heatmap(ps, cutree_rows = 3, rownames = F)
+ps <- Pseudo2Time(gradient_calc, assay = "SCT", return_obj = F)
+p <- plot_pseudotime_heatmap(ps, num_clusters = 2, cores = 2, show_rownames = F, return_heatmap = T)
+p
 ```
-![](../images/figs4/gradient_heatmap.png)
+![](../images/figs3/monocle.png)
 
 For downstream analysis, such as module scores, object ```seurat_obj$meta.data``` should be returned instead of a expression matrix. Thus, set ```return_obj = T```:
 ```sh
-ps <- PseudoM3Time(fracture, assay = "SCT", values = "st", q_cutoff = 0.0000001, cores = 6, return_obj = T)
+ps <- Pseudo2Time(fracture, assay = "SCT", return_obj = T)
 ```
 
 ## Session Info

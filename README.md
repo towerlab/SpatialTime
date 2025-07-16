@@ -1,3 +1,4 @@
+# SpatialTime <img src="man/figures/logo.png" align="right" height="52" alt="" />
 # SpatialTime Package
 
 # Overview

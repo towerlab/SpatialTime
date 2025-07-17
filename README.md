@@ -4,7 +4,8 @@
 <!-- badges: start -->
 ![GitHub License](https://img.shields.io/github/license/dimitrisokolowskei/SpatialTime)
 ![GitHub Tag](https://img.shields.io/github/v/tag/dimitrisokolowskei/SpatialTime)
-![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/dimitrisokolowskei/SpatialTime/latest/total)
+![GitHub top language](https://img.shields.io/github/languages/top/dimitrisokolowskei/SpatialTime)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/dimitrisokolowskei/SpatialTime/total)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dimitrisokolowskei/SpatialTime)
 ![GitHub R package version](https://img.shields.io/github/r-package/v/dimitrisokolowskei/SpatialTime)
 <!-- badges: stop -->
@@ -24,7 +25,9 @@ Installation via Github:
 # install.packages("devtools")
 devtools::install_github("dimitrisokolowskei/SpatialTime")
 ```
-### Bug Reports
+### Bugs/Issues Reports
+Please, if encountering any issues or bugs submit a [Github Issue](https://github.com/dimitrisokolowskei/SpatialTime/issues).
+
 
 ### Vignette 
 A complete vignette on how to use SpatialTime package is available [here](dimitrisokolowskei.github.io/SpatialTime/).

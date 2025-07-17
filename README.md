@@ -5,7 +5,6 @@
 ![GitHub License](https://img.shields.io/github/license/dimitrisokolowskei/SpatialTime)
 ![GitHub Tag](https://img.shields.io/github/v/tag/dimitrisokolowskei/SpatialTime)
 ![GitHub top language](https://img.shields.io/github/languages/top/dimitrisokolowskei/SpatialTime)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/dimitrisokolowskei/SpatialTime/total)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dimitrisokolowskei/SpatialTime)
 ![GitHub R package version](https://img.shields.io/github/r-package/v/dimitrisokolowskei/SpatialTime)
 <!-- badges: stop -->

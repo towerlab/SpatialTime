@@ -4,10 +4,7 @@
 <!-- badges: start -->
 ![GitHub License](https://img.shields.io/github/license/dimitrisokolowskei/SpatialTime)
 ![GitHub Tag](https://img.shields.io/github/v/tag/dimitrisokolowskei/SpatialTime)
-![GitHub branch status](https://img.shields.io/github/checks-status/dimitrisokolowskei/SpatialTime/main)
-![GitHub top language](https://img.shields.io/github/languages/top/dimitrisokolowskei/SpatialTime)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dimitrisokolowskei/SpatialTime)
-![GitHub R package version](https://img.shields.io/github/r-package/v/dimitrisokolowskei/SpatialTime)
 <!-- badges: stop -->
 
 
@@ -22,7 +19,6 @@ Spatial transcriptomics (ST) represents a powerful approach for assessing the ge
 
 Installation via Github:
 ```sh
-# install.packages("devtools")
 devtools::install_github("dimitrisokolowskei/SpatialTime")
 ```
 ### Bugs/Issues Reports
@@ -30,6 +26,6 @@ Please, if encountering any issues or bugs submit a [Github Issue](https://githu
 
 
 ### Vignette 
-A complete vignette on how to use SpatialTime package is available [here](dimitrisokolowskei.github.io/SpatialTime/).
+A complete vignette on how to use SpatialTime package is available [here](docs/index.html).
 
 ### Citation

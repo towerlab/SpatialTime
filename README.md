@@ -26,6 +26,6 @@ Please, if encountering any issues or bugs submit a [Github Issue](https://githu
 
 
 ### Vignette 
-A complete vignette on how to use SpatialTime package is available [here](docs/index.html).
+A complete vignette on how to use SpatialTime package is available [here](https://dimitrisokolowskei.github.io/SpatialTime/).
 
 ### Citation

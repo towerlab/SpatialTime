@@ -1,5 +1,6 @@
-<img src="man/figures/logo.png" align="right" width="352" height="352" alt="" />
-# SpatialTime Package
+<img src="man/figures/logo.png" align="right" width = "352" height="352" alt="" />
+
+# SpatialTime
 
 # Overview
 SpatialTime allows genes and pathways expression assessement visualization from spatial transcriptomics analysis. 

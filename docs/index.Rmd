@@ -16,10 +16,7 @@ output:
 Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression and module score pathways across a distance gradient by establishing spatially defined reference points and calculating ST spots distances against reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
 
 ## Installation
-Package install via CRAN:
-```sh
-install.packages("SpatialTime")
-```
+
 Development version install:
 ```sh
 #(install.packages("devtools")

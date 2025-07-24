@@ -276,7 +276,7 @@ SpatialTime package also supports 10x genomics Visium HD analysis allowing user 
 library(Seurat)
 library(tidyverse)
 library(SpatialTime)
-library(monocle)
+library(monocle3)
 library(reshape2)
 
 mm <- readRDS("path/seurat_object.rds")
@@ -298,7 +298,7 @@ For Fiji image-based analysis:
 library(Seurat)
 library(tidyverse)
 library(SpatialTime)
-library(monocle)
+library(monocle3)
 library(reshape2)
 
 mm <- readRDS("path/seurat_object.rds")

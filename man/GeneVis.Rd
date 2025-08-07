@@ -9,6 +9,7 @@ GeneVis(
   column = NULL,
   signal = c("gene", "pathway"),
   span = 1,
+  span_arg = 0.75,
   se = F,
   line_thickness = 1
 )
@@ -21,6 +22,8 @@ GeneVis(
 \item{signal}{Selecting wheter genes or module pathways to visualize}
 
 \item{span}{Curve smoothness}
+
+\item{span_arg}{Smooth out bins}
 
 \item{se}{Standard error}
 

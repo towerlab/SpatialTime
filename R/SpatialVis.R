@@ -58,6 +58,7 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @param column Genes to be plotted
 #' @param signal Selecting wheter genes or module pathways to visualize
 #' @param span Curve smoothness
+#' @param span_arg Smooth out bins
 #' @param se Standard error
 #' @param line_thickness Curve plot line thickness
 #'
@@ -68,7 +69,7 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @details
 #' Visualization of genes of interest using reference line as starting point
 #'
-GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), span = 1, se = F, line_thickness = 1) {
+GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), span = 1, span_arg = 0.75, se = F, line_thickness = 1) {
 
   if (is.null(file) || class(file) != "Seurat") {
     stop("Error. File not found or format not supported.")
@@ -99,7 +100,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
 
   for (var in unique(df_long$variable)) {
     p <- p + geom_smooth(data = subset(df_long, variable == var), aes(x = st, y = value),
-                         method = "loess", span = span, se = se, linewidth = line_thickness) + theme_classic()
+                         method = "loess", span = span, se = se, linewidth = line_thickness, method.args=list(degree=0,span=span_arg)) + theme_classic()
   }
 
   return(p)

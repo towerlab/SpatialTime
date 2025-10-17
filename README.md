@@ -2,13 +2,10 @@
 #### Spatial transcriptomics distance gradient analysis
 
 <!-- badges: start -->
-![GitHub License](https://img.shields.io/github/license/dimitrisokolowskei/SpatialTime)
-![GitHub Tag](https://img.shields.io/github/v/tag/dimitrisokolowskei/SpatialTime)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dimitrisokolowskei/SpatialTime)
+![GitHub License](https://img.shields.io/github/license/towerlab/SpatialTime)
+![GitHub Tag](https://img.shields.io/github/v/tag/towerlab/SpatialTime)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/towerlab/SpatialTime)
 <!-- badges: stop -->
-
-
-
 
 <img src="man/figures/logo.svg" align="right" width = "225" height="225" alt="" /> 
 

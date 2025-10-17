@@ -19,13 +19,14 @@ Spatial transcriptomics (ST) represents a powerful approach for assessing the ge
 
 Installation via Github:
 ```sh
-devtools::install_github("dimitrisokolowskei/SpatialTime")
+devtools::install_github("towerlab/SpatialTime")
 ```
 ### Bugs/Issues Reports
-Please, if encountering any issues or bugs submit a [Github Issue](https://github.com/dimitrisokolowskei/SpatialTime/issues).
+Please, if encountering any issues or bugs submit a [Github Issue](https://github.com/towerlab/SpatialTime/issues).
 
 
 ### Vignette 
-A complete vignette on how to use SpatialTime package is available [here](https://dimitrisokolowskei.github.io/SpatialTime/).
+A complete vignette on how to use SpatialTime package is available [here](https://towerlab.github.io/SpatialTime/).
 
 ### Citation
+Sokolowskei, D., Trostle, A. J., Shah, A., & Tower, R. (2025). SpatialTime Package (1.0). Zenodo. https://doi.org/10.5281/zenodo.14983368

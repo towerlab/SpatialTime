@@ -129,10 +129,10 @@ ScaleRatio <- function(object = NULL) {
   return(myratio)
 }
 
-gradient_heatmap
+#' gradient_heatmap
 #' @param mtx Gene expression matrix
 #' @param clus_method Clustering method
-#' @param cutreee_rows Cut heatmap
+#' @param cutree_rows Cut heatmap
 #' @param cluster_cols Clustering columns
 #' @param rownames Display row names
 #' @param labels_row Display labels row names

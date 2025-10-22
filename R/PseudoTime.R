@@ -147,6 +147,7 @@ Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 
 #' @param q_cutoff q value cutoff
 #' @param morans_cutoff morans values cutoff
 #' @param cores CPU cores
+#' @param return_obj Return full object
 #'
 #' @details
 #' This function calculates pseudotime using Monocle3

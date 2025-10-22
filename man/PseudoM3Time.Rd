@@ -26,6 +26,8 @@ PseudoM3Time(
 \item{morans_cutoff}{morans values cutoff}
 
 \item{cores}{CPU cores}
+
+\item{return_obj}{Return full object}
 }
 \description{
 PseudoM3Time

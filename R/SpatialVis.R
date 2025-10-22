@@ -134,6 +134,8 @@ ScaleRatio <- function(object = NULL) {
 #' @param clus_method Clustering method
 #' @param cutreee_rows Cut heatmap
 #' @param cluster_cols Clustering columns
+#' @param rownames Display row names
+#' @param labels_row Display labels row names
 #' @param hm_color Heatmap colors
 #'
 #' @import pheatmap
@@ -142,10 +144,29 @@ ScaleRatio <- function(object = NULL) {
 #' @details
 #' This functions plots a heatmap for Pseudo3MTime
 #'
-gradient_heatmap <- function(mtx = NULL, clus_method = "ward.D2", cutree_rows = 3,
-                             cluster_cols = F, rownames = T, hm_color = colorRampPalette(rev(brewer.pal(11, "Spectral")))(100)) {
+gradient_heatmap_test <- function(mtx = NULL, clus_method = "ward.D2", cutree_rows = 3,
+                                  cluster_cols = FALSE, rownames = TRUE, labels_row = NULL,
+                                  hm_color = colorRampPalette(rev(brewer.pal(11, "Spectral")))(100)) {
 
-  ph <- pheatmap(mtx, clustering_method = clus_method, cutree_rows = cutree_rows, cluster_cols = cluster_cols, show_rownames = rownames, color = hm_color)
+  # Perform hierarchical clustering on rows
+  row_dend <- hclust(dist(mtx), method = clus_method)
+
+  # Cut the dendrogram into clusters
+  row_clusters <- cutree(row_dend, k = cutree_rows)
+
+  # Create a data frame for annotation
+  annotation_row <- data.frame(Cluster = factor(row_clusters))
+  rownames(annotation_row) <- rownames(mtx)
+
+  # Generate the heatmap with row annotations
+  ph <- pheatmap(mtx,
+                 clustering_method = clus_method,
+                 cutree_rows = cutree_rows,
+                 cluster_cols = cluster_cols,
+                 show_rownames = rownames,
+                 labels_row = labels_row,
+                 color = hm_color,
+                 annotation_row = annotation_row)
+
   return(ph)
-
 }

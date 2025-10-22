@@ -197,7 +197,7 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots_r
 }
 
 
-#` ShinySpots
+#' ShinySpots
 #' @param seurat_obj Seurat object
 #' @param coord_file Spots selection coordinates
 #' @param slice.n Slice number

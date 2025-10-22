@@ -23,4 +23,5 @@ Imports:
     plotly,
     umap,
     monocle3,
-    pheatmap
+    pheatmap,
+    readr

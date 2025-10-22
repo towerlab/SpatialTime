@@ -39,6 +39,7 @@ CoordMerge <- function(files = "", pattern = "") {
 #' @import tidyverse
 #' @import fs
 #' @export
+
 CoordMergeHD <- function(files = "", pattern = "") {
 
   csv_files <- str_sort(fs::dir_ls(files))

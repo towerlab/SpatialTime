@@ -13,7 +13,7 @@ output:
     toc_depth: '3'
 ---
 # SpatialTime 
-Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving the tissue native morphological configuration. In this context, SpatialTime package empower users to assess differential gene expression and module score pathways across a distance gradient by establishing spatially defined reference points and calculating ST spots distances against reference spots using euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference line.     
+Spatial transcriptomics (ST) enables single cell resolution gene expression analysis assessment across histology sections while preserving native tissue morphology. In this context, SpatialTime package empower users to assess differential gene expression and module score pathways across a distance gradient by establishing spatially defined reference points and calculating ST spots distances against reference spots using Euclidean distances. Thus, a distance gradient can be established allowing the evaluation of gene expression profiling based on proximity of any reference point.     
 
 ## Installation
 
@@ -33,16 +33,16 @@ install_version("igraph", version = "2.0.3")
 ```
 
 ## Prerequisites
-SpatialTime package requires a spatial dataset already processed and integrated. Thus, any doubts on how to proceed with ST basic analysis, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
+SpatialTime package requires a spatial dataset already processed and integrated. For help in generating a Seurat object, please visit [Seurat](https://satijalab.org/seurat/articles/spatial_vignette) vignette.
 
 ## Introduction 
-Fractures represent a severe form of musculoskeletal trauma imposing significant burden for individuals health. Understanding cellular and molecular dynamics upon fractures could provide relevant insights for therapeutic interventions and enhanced injury healing. For this vignette tutorial, we provide a ST example dataset of mice submitted to tibia osteotomy obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL). Additional files to run the vignette can be found at zenodo repository [here](put_link).
+For this vignette tutorial, we provide a ST example dataset of mice subjected to tibia osteotomy obtained from [Rios et al., 2024](https://insight.jci.org/articles/view/176802#BIBL). Additional files to run the vignette can be found at zenodo repository [here](https://zenodo.org/records/14983368).
 
 # Analysis Approaches
-SpatialTime supports different strategies for delimiting spatial reference spots by: 1) Manually defining references spots using the package build-in Shiny App; 2) Selecting single cell types based on clusters identities; 3) Manually defining references lines using imaging *softwares* such as Fiji/ImageJ. For tutorial purposes, first we'll show how to select spots using the different approaches possible. Then, we'll present how to investigate and visualize gene expression and module score across distance gradients.
+SpatialTime supports different strategies for delimiting spatial reference spots by: 1) manually defining references spots using the packages built-in Shiny App; 2) selecting single cell types based on cluster identities, or 3) manually defining references lines using imaging *softwares* such as Fiji/ImageJ. For tutorial purposes, we will first show how to select spots using the three different approaches possible. Then, we'll present how to investigate and visualize gene expression and module score across these established distance gradients.
 
 ## 1. Individual Spots Selection
-1.1 First, import processed Seurat object together with libraries required.
+1.1 First, import required libraries and the processed Seurat object.
 ```sh
 # Libraries
 library(Seurat)
@@ -66,16 +66,20 @@ ratio <- ScaleRatio(demo) # Adjust image scale (OPTIONAL)
 SpatialDimPlot(demo, images = "slice1") +
   theme(aspect.ratio = ratio)
 ```
-1.2 Export cluster's XY coordinates of interest. Make sure that cell types labels are in Seurat object ```Idents()```. In case they're not, clusters labels from ```seurat@meta.data``` can be added into ```Idents()```. For instance:
+1.2 Export XY coordinates of the spatial spot clusters of interest. Make sure the clustering of interest is set as the object active identity. If not, clusters labels from ```seurat@meta.data``` can be added into ```Idents()```. For instance:
 ```sh
 Idents(demo) # Check cluster names in Seurat object identity
-Idents(demo) <- demo$Tissue # Add cluster label from metadata if not set as theinto objects current identity
+Idents(demo) <- demo$Tissue # Change active identity to those defined in the "Tissue" meta data column
 
-# Export cell type coordinates to an output directory
+# Export cell type coordinates to an output directory. For this example, we subset only the repaired cartilage and bone tissue
+
 subset2Labels(demo, cluster = c("Cartilage","HypCH","Woven"), export.all = F, dir.out = "coord_out")
 ```
-1.3 Once the desired clusters coordinates to be compared against to have been exported, we'll have to select our reference spots to establish the reference point for gradient distance calculation. The package's build-in Shiny app allows the visualization of individual spatial spots colored by cluster. Additionally, hoovering the mouse cursor over individual spots shows information of which cluster the spots belongs to and its XY coordinate.
+1.3 Once the coordinates from desired clusters have been exported, we next need to select our reference for gradient distance calculation. The package's build-in Shiny app allows the visualization of individual spatial spots colored by cluster. Additionally, hoovering the mouse cursor over individual spots shows the information of which cluster that spots belongs to as well its XY coordinate.
 ![](../images/figs1/shinyapp_noselection.png)
+
+Run Shiny app and select reference spots:                                                                                                                                                                          ```sh                                                                                                                                                                       
+
 
 To navigate trough the app, use ```shift+left click``` to move around the sample and ```ctrl+left click``` to (un)select the spots. In the top right corner there's ```+``` and ```-``` signs, allowing users to zoom in or zoom out. After spots selection, click ```Export Selected Spots``` and close the Shiny app. The ```id``` parameter have to include ```seurat_obj@meta.data``` column name that contains cell types ID's for better visualization in the shiny app. 
 

@@ -19,7 +19,7 @@ Installation via Github:
 devtools::install_github("towerlab/SpatialTime")
 ```
 ### Bugs/Issues Reports
-Please, if encountering any issues or bugs submit a [Github Issue](https://github.com/towerlab/SpatialTime/issues).
+Please, for any questions, issues or bugs submit a [Github Issue](https://github.com/towerlab/SpatialTime/issues).
 
 
 ### Vignette 

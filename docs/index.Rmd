@@ -254,7 +254,7 @@ In this step, independently of spots selection approach use, st values should be
 ps <- PseudoM3Time(gradient_calc, assay = "SCT", values = "st", return_obj = F)
 hm <- gradient_heatmap(ps, rownames = F)
 ```
-![](../images/figs4/monocle3_gradient.png)
+![](../images/plots/heatmap_oficial.png)
 Genes expressed across heatmap clusters could be obtained by:
 ```sh
 # Obtain gene names in each heatmap clusters
@@ -277,7 +277,7 @@ ps <- PseudoM3Time(gradient_calc, assay = "SCT", values = "st", return_obj = T)
 GeneVis(file = ps, column = c("Col2a1", "Ihh","Sox9"), span = 0.5, signal = "gene")
 ```
 
-![](../images/figs1/gene.png)
+![](../images/plots/genes_curve_plot.png)
 ```sh
 # Gene list pathways
 bmp <- c("Acvr1","Amh","Bmp2","Bmp4","Bmp5","Bmp6","Bmp7","Bmp8a","Bmpr1a","Bmpr1b",
@@ -293,7 +293,7 @@ gene_modules <- list(Module1 = bmp, Module2 = wnt)
 module <- AddModuleScore(gradient_calc, features = gene_modules, assay = "SCT", name = "module", nbin = 16)
 GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", span = 0.5)
 ```
-![](../images/figs1/pathway.png)
+![](../images/plots/pathway_curve_plot.png )
 
 
 # Spatial Transcriptomics Visium HD

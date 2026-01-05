@@ -25,7 +25,7 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 
   spatial.by <- match.arg(spatial.by)
 
-  myBarcode <- rownames(file@meta.data)
+  myBarcode <- Cells(file@meta.data)
   TissueID <- st.calc[match(myBarcode, st.calc$barcode), ]
 
   if (spatial.by == "abs") {
@@ -89,7 +89,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
   }
 
   df <- file@meta.data %>%
-    mutate(x = rownames(file@meta.data)) %>%
+    mutate(x = Cells(file@meta.data)) %>%
     select("x","st")
 
   q <- cbind(df, genes)

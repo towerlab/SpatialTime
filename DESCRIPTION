@@ -24,4 +24,5 @@ Imports:
     umap,
     monocle3,
     pheatmap,
-    readr
+    readr,
+    methods

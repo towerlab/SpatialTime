@@ -25,7 +25,7 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 
   spatial.by <- match.arg(spatial.by)
 
-  myBarcode <- Cells(file@meta.data)
+  myBarcode <- Cells(file)
   TissueID <- st.calc[match(myBarcode, st.calc$barcode), ]
 
   if (spatial.by == "abs") {

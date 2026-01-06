@@ -305,16 +305,17 @@ library(SpatialTime)
 library(monocle3)
 library(reshape2)
 
-mm <- readRDS("path/seurat_object.rds")
+hd <- readRDS("path/seurat_object.rds")
+UpdateSeuratObject(hd)
 
-subset2LabelsHD(mm, cluster = c("CellType1", "CellType2"))
+subset2LabelsHD(hd, cluster = c("CellType1", "CellType2"))
 
 ref <- CoordMergeHD("coord_out", pattern = "CellType1")
 other <- CoordMergeHD("coord_out", pattern = "CellType2")
 
 sp <- Spatial2TimeHD(other, ref)
 
-gradient_vis <- SpatialVis(mm, sp, spatial.by = "rel", slice = "slice1", return_obj = F) 
+gradient_vis <- SpatialVis(hd, sp, spatial.by = "rel", slice = "slice1", return_obj = F) 
 gradient_vis
 ...
 ```
@@ -327,7 +328,7 @@ library(SpatialTime)
 library(monocle3)
 library(reshape2)
 
-mm <- readRDS("path/seurat_object.rds")
+hd <- readRDS("path/seurat_object.rds")
 
 colors <- c("Red")
 tissue <- c("CellType1")
@@ -338,7 +339,7 @@ file <- read.csv("coord_out/{cluster_name}_slice1_coordinates.csv")
 sp <- SpatialTimeHD(data, reference = "CellType1", compare = file)
 sp
 
-gradient_vis <- SpatialVis(mm, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
+gradient_vis <- SpatialVis(hd, sp, spatial.by = "rel", slice = "slice1", return_obj = F)
 gradient_vis
 ...
 ```

@@ -6,7 +6,6 @@
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 
@@ -50,7 +49,6 @@ Spatial2Time <- function(file = NULL, file2 = NULL, id = NULL) {
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 
@@ -92,7 +90,6 @@ Spatial2TimeHD <- function(file = NULL, file2 = NULL, id = NULL) {
 #' @param id Don't remember this
 #' @details
 #' This function calculates euclidean distances of reference spots selected in ShinyApp against cluster coordinates of interest
-#' @import Seurat
 #' @import tidyverse
 #' @export
 #'

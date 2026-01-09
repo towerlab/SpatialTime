@@ -9,7 +9,6 @@
 #' @param image_opacity H&E background opacity
 #'
 #' SpatialVis
-#' @import Seurat
 #' @import tidyverse
 #' @export
 #'
@@ -62,7 +61,6 @@ SpatialVis <- function(file = NULL, st.calc = NULL, spatial.by = c("abs", "rel")
 #' @param se Standard error
 #' @param line_thickness Curve plot line thickness
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 #'
@@ -110,7 +108,6 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
 #' ScaleRatio
 #' @param object Seurat object input
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 #'

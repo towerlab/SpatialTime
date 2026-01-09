@@ -5,7 +5,6 @@
 #' @details
 #' Calculates euclidean distance of Fiji reference lines and cluster establishing a distance gradient
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 
@@ -50,7 +49,6 @@ SpatialTime <- function(file = NULL, reference = NULL, compare = NULL) {
 #' @details
 #' Calculates euclidean distance of Fiji reference lines and cluster establishing a distance gradient for Spatial HD
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 

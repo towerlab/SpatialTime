@@ -8,7 +8,6 @@
 #' @details
 #' This function allows the selection of clusters of interest and exporting their coordinates
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 

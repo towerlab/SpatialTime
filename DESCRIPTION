@@ -13,9 +13,7 @@ Config/testthat/edition: 3
 Imports:
     devtools,
     testthat,
-    usethis, 
-    Hmisc,
-    Seurat,
+    usethis,
     tidyverse,
     fs,
     shiny,
@@ -25,3 +23,5 @@ Imports:
     pheatmap,
     readr,
     methods
+Suggests:
+    Seurat

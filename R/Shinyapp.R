@@ -6,7 +6,6 @@
 #' @details
 #' Shiny app for manual spots selection and coordinates export.
 #'
-#' @import Seurat
 #' @import shiny
 #' @import plotly
 #' @import tidyverse
@@ -205,7 +204,6 @@ ShinySelection <- function(file = NULL, id = NULL, file.name = "selected_spots_r
 #' @details
 #' This function allows coordinates extraction from specific spots barcodes previously selected in ShinySelection function
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 

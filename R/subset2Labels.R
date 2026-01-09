@@ -7,7 +7,6 @@
 #' @details
 #' Export clusters coordinates and all their resptive slices
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 
@@ -78,7 +77,6 @@ subset2Labels <- function(data = NULL, cluster = NULL, export.all = F, dir.out =
 #' @details
 #' Export clusters coordinates and all their resptive slices
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 

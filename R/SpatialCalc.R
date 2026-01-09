@@ -7,7 +7,6 @@
 #' @details
 #'Scale exported clusters coordinates to their respective drawed line colors using image factor
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 

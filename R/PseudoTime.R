@@ -11,9 +11,6 @@
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#' @import Seurat
-#' @import tidyverse
-#' @import Hmisc
 #' @import fs
 #' @export
 
@@ -78,9 +75,7 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#' @import Seurat
 #' @import tidyverse
-#' @import Hmisc
 #' @import fs
 #' @export
 
@@ -150,7 +145,6 @@ Pseudo2Time <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 
 #' @details
 #' This function calculates pseudotime using Monocle3
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @import monocle3
 #' @export
@@ -224,9 +218,7 @@ PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", 
 #' @details
 #' This function calculates and adds coordinates values to each line drawn in data frame.
 #'
-#' @import Seurat
 #' @import tidyverse
-#' @import Hmisc
 #' @import fs
 #' @export
 
@@ -291,7 +283,6 @@ Pseudo2TimeHD <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells 
 #' @details
 #' Get genes present in each clusters identified from heatmap.
 #'
-#' @import Seurat
 #' @import tidyverse
 #' @export
 

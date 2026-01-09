@@ -13,7 +13,6 @@
 #'
 #' @import Seurat
 #' @import tidyverse
-#' @import monocle
 #' @import Hmisc
 #' @import fs
 #' @export
@@ -81,7 +80,6 @@ PseudoTime <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells = 3
 #'
 #' @import Seurat
 #' @import tidyverse
-#' @import monocle
 #' @import Hmisc
 #' @import fs
 #' @export
@@ -228,7 +226,6 @@ PseudoM3Time <- function(file = NULL, assay = c("RNA", "SCT"), values = c("pt", 
 #'
 #' @import Seurat
 #' @import tidyverse
-#' @import monocle
 #' @import Hmisc
 #' @import fs
 #' @export
@@ -295,7 +292,6 @@ Pseudo2TimeHD <- function(file = NULL, assay = "RNA", min_expr = 0.1, min_cells 
 #' Get genes present in each clusters identified from heatmap.
 #'
 #' @import Seurat
-#' @import monocle
 #' @import tidyverse
 #' @export
 

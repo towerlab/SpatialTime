@@ -15,7 +15,6 @@ Imports:
     testthat,
     usethis, 
     Hmisc,
-    monocle,
     Seurat,
     tidyverse,
     fs,

@@ -1500,7 +1500,7 @@ based on proximity of any reference point.</p>
 <h2>Installation</h2>
 <p>Development version install:</p>
 <pre class="sh"><code>#(install.packages(&quot;devtools&quot;)
-devtools::install_github(&quot;dimitrisokolowskei/SpatialTime&quot;)</code></pre>
+devtools::install_github(&quot;towerlab/SpatialTime&quot;)</code></pre>
 </div>
 <div id="dependencies-requirements" class="section level2">
 <h2>Dependencies Requirements</h2>
@@ -1796,16 +1796,17 @@ library(SpatialTime)
 library(monocle3)
 library(reshape2)
 
-mm &lt;- readRDS(&quot;path/seurat_object.rds&quot;)
+hd &lt;- readRDS(&quot;path/seurat_object.rds&quot;)
+hd &lt;- UpdateSeuratObject(hd)
 
-subset2LabelsHD(mm, cluster = c(&quot;CellType1&quot;, &quot;CellType2&quot;))
+subset2LabelsHD(hd, cluster = c(&quot;CellType1&quot;, &quot;CellType2&quot;))
 
 ref &lt;- CoordMergeHD(&quot;coord_out&quot;, pattern = &quot;CellType1&quot;)
 other &lt;- CoordMergeHD(&quot;coord_out&quot;, pattern = &quot;CellType2&quot;)
 
 sp &lt;- Spatial2TimeHD(other, ref)
 
-gradient_vis &lt;- SpatialVis(mm, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1&quot;, return_obj = F) 
+gradient_vis &lt;- SpatialVis(hd, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1&quot;, return_obj = F) 
 gradient_vis
 ...</code></pre>
 <p>For Fiji image-based analysis:</p>
@@ -1815,7 +1816,8 @@ library(SpatialTime)
 library(monocle3)
 library(reshape2)
 
-mm &lt;- readRDS(&quot;path/seurat_object.rds&quot;)
+hd &lt;- readRDS(&quot;path/seurat_object.rds&quot;)
+hd &lt;- UpdateSeuratObject(hd)
 
 colors &lt;- c(&quot;Red&quot;)
 tissue &lt;- c(&quot;CellType1&quot;)
@@ -1826,9 +1828,17 @@ file &lt;- read.csv(&quot;coord_out/{cluster_name}_slice1_coordinates.csv&quot;)
 sp &lt;- SpatialTimeHD(data, reference = &quot;CellType1&quot;, compare = file)
 sp
 
-gradient_vis &lt;- SpatialVis(mm, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1&quot;, return_obj = F)
+gradient_vis &lt;- SpatialVis(hd, sp, spatial.by = &quot;rel&quot;, slice = &quot;slice1&quot;, return_obj = F)
 gradient_vis
 ...</code></pre>
+<div id="attention" class="section level2">
+<h2>Attention</h2>
+<p>Despite support for 10x genomics Visium HD protocol, SpatialTime
+calculation might take considerable computing time and resources due to
+true single cell resolution datasets size and complexity. In these cases
+we highly recommend having at disposal at least 8 CPU cores and 64gb
+RAM.</p>
+</div>
 <div id="monocle-usage" class="section level2">
 <h2>Monocle Usage</h2>
 <p>SpatialTime package was originally conceived using

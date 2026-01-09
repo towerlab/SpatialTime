@@ -20,7 +20,7 @@ Spatial transcriptomics (ST) enables single cell resolution gene expression anal
 Development version install:
 ```sh
 #(install.packages("devtools")
-devtools::install_github("dimitrisokolowskei/SpatialTime")
+devtools::install_github("towerlab/SpatialTime")
 ```
 ## Dependencies Requirements
 The ```igraph``` package version < ```2.1.0``` are required for ```SpatialTime``` package. For instance:
@@ -298,6 +298,7 @@ GeneVis(file = module, column = c("module1", "module2"), signal = "pathway", spa
 
 # Spatial Transcriptomics Visium HD
 SpatialTime package also supports 10x genomics Visium HD analysis allowing user to calculate distance gradients in a true single cell resolution. The SpatialTime rationale for HD assays remains with minor modifications from standard cluster-based or image-based approaches. For instance:
+
 ```sh
 library(Seurat)
 library(tidyverse)
@@ -306,7 +307,7 @@ library(monocle3)
 library(reshape2)
 
 hd <- readRDS("path/seurat_object.rds")
-UpdateSeuratObject(hd)
+hd <- UpdateSeuratObject(hd)
 
 subset2LabelsHD(hd, cluster = c("CellType1", "CellType2"))
 
@@ -329,6 +330,7 @@ library(monocle3)
 library(reshape2)
 
 hd <- readRDS("path/seurat_object.rds")
+hd <- UpdateSeuratObject(hd)
 
 colors <- c("Red")
 tissue <- c("CellType1")
@@ -343,6 +345,9 @@ gradient_vis <- SpatialVis(hd, sp, spatial.by = "rel", slice = "slice1", return_
 gradient_vis
 ...
 ```
+
+## Attention
+Despite support for 10x genomics Visium HD protocol, SpatialTime calculation might take considerable computing time and resources due to true single cell resolution datasets size and complexity. In these cases we highly recommend having at disposal at least 8 CPU cores and 64gb RAM.
 
 ## Monocle Usage
 SpatialTime package was originally conceived using ```monocle``` for spatialvalues calculation mainly to its reliability and heatmap plotting facility. However, monocle's newer versions such as ```monocle3``` brought series of performance and analysis enhancements. Thus, we additionally provide a monocle wrapper function that allows equivalent spatialtime calculation in the standard SpatialTime pipeline. For instance:

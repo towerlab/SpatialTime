@@ -89,7 +89,7 @@ GeneVis <- function(file = NULL, column = NULL, signal = c("gene", "pathway"), s
   }
 
   df <- file@meta.data %>%
-    mutate(x = Cells(file@meta.data)) %>%
+    mutate(x = Cells(file)) %>%
     select("x","st")
 
   q <- cbind(df, genes)
